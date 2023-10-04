@@ -12,8 +12,8 @@ enum Suits
 class Card
 {
 private:
-	string ranks = ""; // 2->A
-	int suits;		   // clubs, diamonds, hearts, spades
+	string ranks; // 2->A
+	int suits;	  // clubs, diamonds, hearts, spades
 	int value;
 	string url;
 
@@ -63,17 +63,29 @@ public:
 	}
 	void setValue(string rank)
 	{
-		if (rank == "A")
+		if (rank == "J")
 		{
 			this->value = 11;
 		}
-		else if (rank == "K" || rank == "Q" || rank == "J")
+		else if (rank == "Q")
 		{
-			this->value = 10;
+			this->value = 12;
+		}
+		else if (rank == "K")
+		{
+			this->value = 13;
+		}
+		else if (rank == "A")
+		{
+			this->value = 14;
+		}
+		else if (rank == "2")
+		{
+			this->value = 15;
 		}
 		else
 		{
-			this->value = stoi(ranks);
+			this->value = stoi(rank);
 		}
 	}
 	int getValue()

@@ -1,6 +1,8 @@
 /*This source code copyrighted by Lazy Foo' Productions 2004-2023
 and may not be redistributed without written permission.*/
 
+#pragma once
+
 // Using SDL, SDL_image, standard IO, and strings
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_image.h>
@@ -9,6 +11,8 @@ and may not be redistributed without written permission.*/
 #include <cstdio>
 
 #include "src/module/card.h"
+#include "src/module/user.h"
+
 using namespace std;
 
 // Screen dimension constants
@@ -184,19 +188,23 @@ int main(int argc, char *args[])
         // This will show the new, red contents of the window.
         SDL_RenderPresent(gRenderer);
 
-        // Render init cards
-        for (int i = 0; i < 13; i++)
-        {
-            Card lastCard = plCards.get1Card();
+        User player;
+        player.setUserCards(plCards);
+        player.sortCard();
 
-            if (!loadMedia(lastCard.getUrl()))
+        // Render init cards
+        for (int i = 0; i < player.getCardCount(); i++)
+        {
+            Card currCard = player.getUserCards()[i];
+
+            if (!loadMedia(currCard.getUrl()))
             {
-                cout << lastCard.getUrl() << endl;
+                cout << currCard.getUrl() << endl;
                 continue;
             }
 
             // Render texture to screen
-            SDL_Rect destinationRect = {i * 80 + 50, 500, 150, 217};
+            SDL_Rect destinationRect = {i * 80 + 50, 500, 120, 174};
             SDL_RenderCopy(gRenderer, gTexture, NULL, &destinationRect);
         }
 
@@ -210,7 +218,7 @@ int main(int argc, char *args[])
             SDL_Rect destinationRect = {50, SCREEN_HEIGHT / 2 - 145, 100, 145};
             SDL_RenderCopy(gRenderer, gTexture, NULL, &destinationRect);
 
-            destinationRect = {SCREEN_WIDTH - 100, SCREEN_HEIGHT / 2 - 145, 100, 145};
+            destinationRect = {SCREEN_WIDTH - 150, SCREEN_HEIGHT / 2 - 145, 100, 145};
             SDL_RenderCopy(gRenderer, gTexture, NULL, &destinationRect);
 
             destinationRect = {SCREEN_WIDTH / 2 - 100, 5, 100, 145};
