@@ -47,4 +47,14 @@ public:
     {
         userCards.clear();
     }
+    void isFirstUserCard()
+    {
+        for(const Card &card : this->userCards)
+        {
+            if(card.getSuits() == 'S' && card.getValue() == 3)
+            {
+                this->isFirst = true;
+            }
+        }
+    }
 };
