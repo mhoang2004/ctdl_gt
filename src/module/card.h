@@ -17,7 +17,20 @@ private:
 	int value;
 	string url;
 
+	int x;
+	int y;
+	int width;
+	int height;
+
 public:
+	Card()
+	{
+		this->x = 0;
+		this->y = 500;
+		this->width = 120;
+		this->height = 174;
+	}
+
 	void setRanks(string ranks)
 	{
 		this->ranks = ranks;
@@ -91,6 +104,46 @@ public:
 	int getValue()
 	{
 		return value;
+	}
+
+	void setX(int x)
+	{
+		this->x = x;
+	}
+
+	void setY(int y)
+	{
+		this->y = y;
+	}
+
+	void setWidth(int width)
+	{
+		this->width = width;
+	}
+
+	void setHeight(int height)
+	{
+		this->height = height;
+	}
+
+	int getX()
+	{
+		return this->x;
+	}
+
+	int getY()
+	{
+		return this->y;
+	}
+
+	int getWidth()
+	{
+		return this->width;
+	}
+
+	int getHeight()
+	{
+		return this->height;
 	}
 };
 

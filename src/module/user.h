@@ -8,6 +8,10 @@ class User
 private:
     vector<Card> userCards;
     vector<Card> selectedCards;
+
+    // The window renderer
+    SDL_Renderer *gRenderer = NULL;
+
     int money = 0;
     int cardCount = 13;
     bool isFirst = false;

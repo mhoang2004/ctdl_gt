@@ -192,6 +192,9 @@ int main(int argc, char *args[])
         player.setUserCards(plCards);
         player.sortCard();
 
+        // where cards will appear
+        SDL_Rect destinationRect;
+
         // Render init cards
         for (int i = 0; i < player.getCardCount(); i++)
         {
@@ -204,7 +207,15 @@ int main(int argc, char *args[])
             }
 
             // Render texture to screen
-            SDL_Rect destinationRect = {i * 80 + 50, 500, 120, 174};
+            currCard.setX(i * 80 + 50);
+
+            // Listen mouse click
+            if (i == 10)
+            {
+                currCard.setY(450);
+            }
+
+            destinationRect = {currCard.getX(), currCard.getY(), currCard.getWidth(), currCard.getHeight()};
             SDL_RenderCopy(gRenderer, gTexture, NULL, &destinationRect);
         }
 
@@ -215,15 +226,17 @@ int main(int argc, char *args[])
         }
         else
         {
-            SDL_Rect destinationRect = {50, SCREEN_HEIGHT / 2 - 145, 100, 145};
+            destinationRect = {50, SCREEN_HEIGHT / 2 - 145, 100, 145};
             SDL_RenderCopy(gRenderer, gTexture, NULL, &destinationRect);
 
-            destinationRect = {SCREEN_WIDTH - 150, SCREEN_HEIGHT / 2 - 145, 100, 145};
+            destinationRect = {SCREEN_WIDTH - 200, SCREEN_HEIGHT / 2 - 145, 100, 145};
             SDL_RenderCopy(gRenderer, gTexture, NULL, &destinationRect);
 
             destinationRect = {SCREEN_WIDTH / 2 - 100, 5, 100, 145};
             SDL_RenderCopy(gRenderer, gTexture, NULL, &destinationRect);
         }
+
+        SDL_RenderCopy(gRenderer, gTexture, NULL, &destinationRect);
 
         SDL_SetRenderDrawColor(gRenderer, 0, 255, 255, 255);
 

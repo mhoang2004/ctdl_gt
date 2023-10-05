@@ -82,16 +82,3 @@ void mergeSort(vector<Card> &arr, int l, int r)
         merge(arr, l, m, r);
     }
 }
-
-// Driver program
-// int main()
-// {
-//     int arr[] = {6, 5, 12, 10, 9, 1};
-//     int size = sizeof(arr) / sizeof(arr[0]);
-
-//     mergeSort(arr, 0, size - 1);
-
-//     cout << "Sorted array: \n";
-//     printArray(arr, size);
-//     return 0;
-// }
