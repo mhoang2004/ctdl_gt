@@ -15,7 +15,13 @@ private:
 	string ranks; // 2->A
 	int suits;	  // clubs, diamonds, hearts, spades
 	int value;
-	string url;
+	string url; // where the card stored in file 'src'
+
+	// Current displayed texture
+	SDL_Texture *texture = NULL;
+
+	// where cards will appear
+	SDL_Rect destinationRect;
 
 	int x;
 	int y;
@@ -26,11 +32,34 @@ public:
 	Card()
 	{
 		this->x = 0;
-		this->y = 500;
+		this->y = 560;
 		this->width = 120;
 		this->height = 174;
+
+		setDestinationRect();
 	}
 
+	SDL_Texture *getTexture()
+	{
+		return this->texture;
+	}
+
+	void setTexture(SDL_Texture *texture)
+	{
+		this->texture = texture;
+	}
+
+	SDL_Rect *getDestinationRect()
+	{
+		return &(this->destinationRect);
+	}
+	void setDestinationRect()
+	{
+		this->destinationRect = {this->x,
+								 this->y,
+								 this->width,
+								 this->height};
+	}
 	void setRanks(string ranks)
 	{
 		this->ranks = ranks;
@@ -105,42 +134,38 @@ public:
 	{
 		return value;
 	}
-
 	void setX(int x)
 	{
 		this->x = x;
+		setDestinationRect();
 	}
-
 	void setY(int y)
 	{
 		this->y = y;
+		setDestinationRect();
 	}
-
 	void setWidth(int width)
 	{
 		this->width = width;
+		setDestinationRect();
 	}
-
 	void setHeight(int height)
 	{
 		this->height = height;
+		setDestinationRect();
 	}
-
 	int getX()
 	{
 		return this->x;
 	}
-
 	int getY()
 	{
 		return this->y;
 	}
-
 	int getWidth()
 	{
 		return this->width;
 	}
-
 	int getHeight()
 	{
 		return this->height;
@@ -159,6 +184,7 @@ public:
 	PlayingCards()
 	{
 		this->createPlayingCards();
+		this->shufflePlayingCards();
 	}
 	vector<Card> getPlayingCards()
 	{
@@ -180,6 +206,8 @@ public:
 				card.setSuits(suits[k]);
 				card.setValue(ranks[j]);
 				card.setUrl(card.getRanks(), card.getSuits());
+				card.setTexture(loadTexture(card.getUrl()));
+
 				playingCards.push_back(card);
 			}
 		}

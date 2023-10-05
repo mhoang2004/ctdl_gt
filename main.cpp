@@ -1,44 +1,21 @@
-/*This source code copyrighted by Lazy Foo' Productions 2004-2023
-and may not be redistributed without written permission.*/
-
 #pragma once
 
-// Using SDL, SDL_image, standard IO, and strings
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_image.h>
 #include <stdio.h>
 #include <string>
 #include <cstdio>
 
+using namespace std;
+
+#include "src/module/loadImage.h"
+
 #include "src/module/card.h"
 #include "src/module/user.h"
-
-using namespace std;
 
 // Screen dimension constants
 const int SCREEN_WIDTH = 1250;
 const int SCREEN_HEIGHT = 700;
-
-// Starts up SDL and creates window
-bool init();
-
-// Loads media
-bool loadMedia(string path);
-
-// Frees media and shuts down SDL
-void close();
-
-// Loads individual image as texture
-SDL_Texture *loadTexture(string path);
-
-// The window we'll be rendering to
-SDL_Window *gWindow = NULL;
-
-// The window renderer
-SDL_Renderer *gRenderer = NULL;
-
-// Current displayed texture
-SDL_Texture *gTexture = NULL;
 
 bool init()
 {
@@ -94,23 +71,6 @@ bool init()
     return success;
 }
 
-bool loadMedia(string path)
-{
-    // Loading success flag
-    bool success = true;
-
-    // Load PNG texture
-
-    gTexture = loadTexture(path);
-    if (gTexture == NULL)
-    {
-        printf("Failed to load texture image!\n");
-        success = false;
-    }
-
-    return success;
-}
-
 void close()
 {
     // Free loaded image
@@ -128,44 +88,8 @@ void close()
     SDL_Quit();
 }
 
-SDL_Texture *loadTexture(string path)
-{
-    // The final texture
-    SDL_Texture *newTexture = NULL;
-
-    // Load image at specified path
-    SDL_Surface *loadedSurface = IMG_Load(path.c_str());
-    if (loadedSurface == NULL)
-    {
-        printf("Unable to load image %s! SDL_image Error: %s\n", path.c_str(), IMG_GetError());
-    }
-    else
-    {
-        // Create texture from surface pixels
-        newTexture = SDL_CreateTextureFromSurface(gRenderer, loadedSurface);
-        if (newTexture == NULL)
-        {
-            printf("Unable to create texture from %s! SDL Error: %s\n", path.c_str(), SDL_GetError());
-        }
-
-        // Get rid of old loaded surface
-        SDL_FreeSurface(loadedSurface);
-    }
-
-    return newTexture;
-}
-
 int main(int argc, char *args[])
 {
-    // set a seed
-    srand(time(0));
-
-    // init deck
-    PlayingCards plCards;
-
-    // shuffle the deck
-    plCards.shufflePlayingCards();
-
     // Start up SDL and create window
     if (!init())
     {
@@ -173,50 +97,38 @@ int main(int argc, char *args[])
     }
     else
     {
+        // set a seed
+        srand(time(0));
+
+        // init shuffle deck
+        PlayingCards plCards;
+
         // Main loop flag
         bool quit = false;
+
+        // set background
+        SDL_SetRenderDrawColor(gRenderer, 0, 255, 0, 255);
+        SDL_RenderClear(gRenderer);
+        SDL_RenderPresent(gRenderer);
 
         // Event handler
         SDL_Event e;
 
-        SDL_SetRenderDrawColor(gRenderer, 34, 139, 34, 255);
-
-        // Clear the entire screen to our selected color.
-        SDL_RenderClear(gRenderer);
-
-        // Up until now everything was drawn behind the scenes.
-        // This will show the new, red contents of the window.
-        SDL_RenderPresent(gRenderer);
-
         User player;
+
+        // init 13 cards
         player.setUserCards(plCards);
         player.sortCard();
-
-        // where cards will appear
-        SDL_Rect destinationRect;
 
         // Render init cards
         for (int i = 0; i < player.getCardCount(); i++)
         {
             Card currCard = player.getUserCards()[i];
-
-            if (!loadMedia(currCard.getUrl()))
-            {
-                cout << currCard.getUrl() << endl;
-                continue;
-            }
-
-            // Render texture to screen
+            // padding each card is 80 (change here!!)
             currCard.setX(i * 80 + 50);
 
-            // Listen mouse click
-            if (i == 10)
-            {
-                currCard.setY(450);
-            }
-
-            destinationRect = {currCard.getX(), currCard.getY(), currCard.getWidth(), currCard.getHeight()};
-            SDL_RenderCopy(gRenderer, gTexture, NULL, &destinationRect);
+            // Render texture to screen
+            SDL_RenderCopy(gRenderer, currCard.getTexture(), NULL, currCard.getDestinationRect());
         }
 
         if (!loadMedia("src/cards/BACK.png"))
@@ -226,6 +138,9 @@ int main(int argc, char *args[])
         }
         else
         {
+            // where computer's cards will appear
+            SDL_Rect destinationRect;
+
             destinationRect = {50, SCREEN_HEIGHT / 2 - 145, 100, 145};
             SDL_RenderCopy(gRenderer, gTexture, NULL, &destinationRect);
 
@@ -236,9 +151,33 @@ int main(int argc, char *args[])
             SDL_RenderCopy(gRenderer, gTexture, NULL, &destinationRect);
         }
 
-        SDL_RenderCopy(gRenderer, gTexture, NULL, &destinationRect);
+        if (!loadMedia("src/image/skip.png"))
+        {
+            cout << "Fail to load skip img" << endl;
+            return 1;
+        }
+        else
+        {
+            // where the button will appear
+            SDL_Rect destinationRect;
 
-        SDL_SetRenderDrawColor(gRenderer, 0, 255, 255, 255);
+            destinationRect = {210, 450, 135, 59};
+            SDL_RenderCopy(gRenderer, gTexture, NULL, &destinationRect);
+        }
+
+        if (!loadMedia("src/image/play.png"))
+        {
+            cout << "Fail to load play img" << endl;
+            return 1;
+        }
+        else
+        {
+            // where the button will appear
+            SDL_Rect destinationRect;
+
+            destinationRect = {800, 450, 135, 59};
+            SDL_RenderCopy(gRenderer, gTexture, NULL, &destinationRect);
+        }
 
         // Update screen
         SDL_RenderPresent(gRenderer);
@@ -252,6 +191,33 @@ int main(int argc, char *args[])
                 if (e.type == SDL_QUIT)
                 {
                     quit = true;
+                }
+
+                if (e.type == SDL_MOUSEBUTTONUP)
+                {
+                    int mouseX, mouseY;
+                    SDL_GetMouseState(&mouseX, &mouseY);
+
+                    // user cards area
+                    SDL_Rect rectangle = {50, 560, 120 * player.getCardCount(), 174};
+                    if (mouseX >= rectangle.x && mouseX <= rectangle.x + rectangle.w &&
+                        mouseY >= rectangle.y && mouseY <= rectangle.y + rectangle.h)
+                    {
+                        for (int i = 0; i < player.getCardCount(); i++)
+                        {
+                            Card currCard = player.getUserCards()[i];
+                            // padding each card is 80 (change here!!)
+                            currCard.setX(i * 80 + 50);
+
+                            if (i == 11)
+                            {
+                                currCard.setY(525);
+                            }
+
+                            // Render texture to screen
+                            SDL_RenderCopy(gRenderer, currCard.getTexture(), NULL, currCard.getDestinationRect());
+                        }
+                    }
                 }
             }
         }
