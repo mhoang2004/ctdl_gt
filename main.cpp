@@ -8,14 +8,13 @@
 
 using namespace std;
 
-#include "src/module/loadImage.h"
-
-#include "src/module/card.h"
-#include "src/module/user.h"
-
 // Screen dimension constants
 const int SCREEN_WIDTH = 1250;
 const int SCREEN_HEIGHT = 700;
+
+#include "src/module/image.h"
+#include "src/module/card.h"
+#include "src/module/user.h"
 
 bool init()
 {
@@ -74,8 +73,8 @@ bool init()
 void close()
 {
     // Free loaded image
-    SDL_DestroyTexture(gTexture);
-    gTexture = NULL;
+    // SDL_DestroyTexture(gTexture);
+    // gTexture = NULL;
 
     // Destroy window
     SDL_DestroyRenderer(gRenderer);
@@ -117,67 +116,17 @@ int main(int argc, char *args[])
         User player;
 
         // init 13 cards
-        player.setUserCards(plCards);
-        player.sortCard();
+        player.initUserCards(plCards);
+
+        backTexture = loadTexture("src/cards/BACK.png");
+        hitBtnTexture = loadTexture("src/image/play.png");
+        skipBtnTexture = loadTexture("src/image/skip.png");
+
+        renderBackCard();
+        renderComputerCards();
 
         // Render init cards
-        for (int i = 0; i < player.getCardCount(); i++)
-        {
-            Card currCard = player.getUserCards()[i];
-            // padding each card is 80 (change here!!)
-            currCard.setX(i * 80 + 50);
-
-            // Render texture to screen
-            SDL_RenderCopy(gRenderer, currCard.getTexture(), NULL, currCard.getDestinationRect());
-        }
-
-        if (!loadMedia("src/cards/BACK.png"))
-        {
-            cout << "Fail to load back img" << endl;
-            return 1;
-        }
-        else
-        {
-            // where computer's cards will appear
-            SDL_Rect destinationRect;
-
-            destinationRect = {50, SCREEN_HEIGHT / 2 - 145, 100, 145};
-            SDL_RenderCopy(gRenderer, gTexture, NULL, &destinationRect);
-
-            destinationRect = {SCREEN_WIDTH - 200, SCREEN_HEIGHT / 2 - 145, 100, 145};
-            SDL_RenderCopy(gRenderer, gTexture, NULL, &destinationRect);
-
-            destinationRect = {SCREEN_WIDTH / 2 - 100, 5, 100, 145};
-            SDL_RenderCopy(gRenderer, gTexture, NULL, &destinationRect);
-        }
-
-        if (!loadMedia("src/image/skip.png"))
-        {
-            cout << "Fail to load skip img" << endl;
-            return 1;
-        }
-        else
-        {
-            // where the button will appear
-            SDL_Rect destinationRect;
-
-            destinationRect = {210, 450, 135, 59};
-            SDL_RenderCopy(gRenderer, gTexture, NULL, &destinationRect);
-        }
-
-        if (!loadMedia("src/image/play.png"))
-        {
-            cout << "Fail to load play img" << endl;
-            return 1;
-        }
-        else
-        {
-            // where the button will appear
-            SDL_Rect destinationRect;
-
-            destinationRect = {800, 450, 135, 59};
-            SDL_RenderCopy(gRenderer, gTexture, NULL, &destinationRect);
-        }
+        player.printCards();
 
         // Update screen
         SDL_RenderPresent(gRenderer);
@@ -199,30 +148,61 @@ int main(int argc, char *args[])
                     SDL_GetMouseState(&mouseX, &mouseY);
 
                     // user cards area
-                    SDL_Rect rectangle = {50, 560, 120 * player.getCardCount(), 174};
-                    if (mouseX >= rectangle.x && mouseX <= rectangle.x + rectangle.w &&
-                        mouseY >= rectangle.y && mouseY <= rectangle.y + rectangle.h)
+                    SDL_Rect cardArea = {50, 560, 80 * player.getCardCount() + 40, 174};
+                    if (mouseX >= cardArea.x && mouseX <= cardArea.x + cardArea.w &&
+                        mouseY >= cardArea.y && mouseY <= cardArea.y + cardArea.h)
                     {
-                        for (int i = 0; i < player.getCardCount(); i++)
-                        {
-                            Card currCard = player.getUserCards()[i];
-                            // padding each card is 80 (change here!!)
-                            currCard.setX(i * 80 + 50);
+                        int index;
 
-                            if (i == 11)
+                        // calculate the index user clicked
+                        int minValue = 50;
+                        for (int i = 0; i < cardArea.w; i++)
+                        {
+                            int maxValue = minValue + 80;
+
+                            if (minValue < mouseX && maxValue > mouseX)
                             {
-                                currCard.setY(525);
+                                index = i;
+                                break;
                             }
 
-                            // Render texture to screen
-                            SDL_RenderCopy(gRenderer, currCard.getTexture(), NULL, currCard.getDestinationRect());
+                            minValue = maxValue;
+
+                            if (index > 12)
+                                index = 12;
                         }
+
+                        player.changeSelected(index);
+
+                        SDL_RenderClear(gRenderer);
+
+                        renderBackCard();
+                        renderComputerCards();
+
+                        player.printCards();
+
+                        SDL_RenderPresent(gRenderer);
+                    }
+
+                    SDL_Rect hitBtnArea = {800, 450, 135, 59};
+                    if (mouseX >= hitBtnArea.x && mouseX <= hitBtnArea.x + hitBtnArea.w &&
+                        mouseY >= hitBtnArea.y && mouseY <= hitBtnArea.y + hitBtnArea.h)
+                    {
+                        SDL_RenderClear(gRenderer);
+
+                        renderBackCard();
+                        renderComputerCards();
+
+                        player.hit();
+
+                        player.printCards();
+
+                        SDL_RenderPresent(gRenderer);
                     }
                 }
             }
         }
     }
-
     // Free resources and close SDL
     close();
 

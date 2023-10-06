@@ -1,4 +1,5 @@
 #include <bits/stdc++.h>
+#include <algorithm>
 
 #include "algorithms.h"
 using namespace std;
@@ -7,7 +8,9 @@ class User
 {
 private:
     vector<Card> userCards;
-    vector<Card> selectedCards;
+
+    // index of selected cards
+    vector<int> selectedCards;
 
     int money = 0;
     int cardCount = 13;
@@ -15,7 +18,7 @@ private:
     bool isSpecial = false;
 
 public:
-    void setUserCards(PlayingCards &plCards)
+    void initUserCards(PlayingCards &plCards)
     {
         for (int i = 0; i < 13; i++)
         {
@@ -46,8 +49,60 @@ public:
 
     void clearUserCards()
     {
-        userCards.clear();
+        this->userCards.clear();
     }
+
+    void printCards()
+    {
+        sortCard();
+        for (int i = 0; i < cardCount; i++)
+        {
+            userCards[i].setX(i * 80 + 50);
+
+            // selected cards
+            if (count(selectedCards.begin(), selectedCards.end(), i))
+            {
+                userCards[i].setY(525);
+            }
+            else
+            {
+                userCards[i].setY(560);
+            }
+
+            // Render texture to screen
+            SDL_RenderCopy(gRenderer, userCards[i].getTexture(), NULL, userCards[i].getDestinationRect());
+        }
+    }
+
+    void changeSelected(int x)
+    {
+
+        // check if x in changeSelected of not?
+        if (count(selectedCards.begin(), selectedCards.end(), x))
+        {
+            selectedCards.erase(remove(selectedCards.begin(), selectedCards.end(), x), selectedCards.end());
+        }
+        else
+        {
+            selectedCards.push_back(x);
+        }
+    }
+
+    void hit()
+    {
+        int len = selectedCards.size();
+
+        // check is valid cards?
+
+        for (int i = 0; i < len; i++)
+        {
+            userCards.erase(userCards.begin() + selectedCards[i]);
+            cardCount--;
+        }
+
+        selectedCards.clear();
+    }
+
     // void isFirstUserCard()
     // {
     //     for (const Card &card : this->userCards)
