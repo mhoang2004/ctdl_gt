@@ -1,3 +1,5 @@
+#pragma once
+
 void renderBackCard()
 {
     SDL_Rect destinationRect;
@@ -38,7 +40,8 @@ void renderHistory(vector<vector<Card>> history)
             card.setWidth(80);
             card.setHeight(116);
 
-            SDL_SetTextureColorMod(texture, 255, 0, 0);
+            if (i != len - 1)
+                card.blackColor();
 
             SDL_RenderCopy(gRenderer, card.getTexture(), NULL, card.getDestinationRect());
 

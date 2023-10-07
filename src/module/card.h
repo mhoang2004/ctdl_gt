@@ -1,3 +1,4 @@
+#pragma once
 #include <bits/stdc++.h>
 
 using namespace std;
@@ -43,6 +44,11 @@ public:
 	SDL_Texture *getTexture()
 	{
 		return this->texture;
+	}
+
+	void blackColor()
+	{
+		SDL_SetTextureColorMod(texture, 120, 120, 120);
 	}
 
 	void setTexture(SDL_Texture *texture)

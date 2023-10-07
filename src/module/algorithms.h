@@ -1,3 +1,5 @@
+#pragma once
+
 // Merge two subarrays L and M into arr
 void merge(vector<Card> &arr, int p, int q, int r)
 {

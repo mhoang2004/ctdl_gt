@@ -1,3 +1,5 @@
+#pragma once
+
 SDL_Texture *backTexture = NULL;
 SDL_Texture *hitBtnTexture = NULL;
 SDL_Texture *skipBtnTexture = NULL;
