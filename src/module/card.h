@@ -1,4 +1,5 @@
 #include <bits/stdc++.h>
+
 using namespace std;
 
 enum Suits
@@ -15,7 +16,7 @@ private:
 	string ranks; // 2->A
 	int suits;	  // clubs, diamonds, hearts, spades
 	int value;
-	string url; // where the card stored in file 'src'
+	string path; // where the card stored in file 'src'
 
 	// Current displayed texture
 	SDL_Texture *texture = NULL;
@@ -68,32 +69,32 @@ public:
 	{
 		return ranks;
 	}
-	void setUrl(string rank, int suit)
+	void setPath(string rank, int suit)
 	{
-		this->url = "src/cards/";
-		this->url += rank;
-		this->url += "-";
+		this->path = "src/cards/";
+		this->path += rank;
+		this->path += "-";
 
 		switch (suits)
 		{
 		case 3:
-			this->url += "H";
+			this->path += "H";
 			break;
 		case 4:
-			this->url += "D";
+			this->path += "D";
 			break;
 		case 5:
-			this->url += "C";
+			this->path += "C";
 			break;
 		case 6:
-			this->url += "S";
+			this->path += "S";
 			break;
 		}
-		this->url += ".png";
+		this->path += ".png";
 	}
-	string getUrl()
+	string getPath()
 	{
-		return url;
+		return path;
 	}
 	void setSuits(int suits)
 	{
@@ -205,8 +206,8 @@ public:
 				card.setRanks(ranks[j]);
 				card.setSuits(suits[k]);
 				card.setValue(ranks[j]);
-				card.setUrl(card.getRanks(), card.getSuits());
-				card.setTexture(loadTexture(card.getUrl()));
+				card.setPath(card.getRanks(), card.getSuits());
+				card.setTexture(loadTexture(card.getPath()));
 
 				playingCards.push_back(card);
 			}

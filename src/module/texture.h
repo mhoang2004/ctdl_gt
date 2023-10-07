@@ -34,29 +34,3 @@ SDL_Texture *loadTexture(string path)
 
     return newTexture;
 }
-
-void renderBackCard()
-{
-    SDL_Rect destinationRect;
-
-    // play btn
-    destinationRect = {210, 450, 135, 59};
-    SDL_RenderCopy(gRenderer, skipBtnTexture, NULL, &destinationRect);
-
-    // skip btn
-    destinationRect = {800, 450, 135, 59};
-    SDL_RenderCopy(gRenderer, hitBtnTexture, NULL, &destinationRect);
-}
-
-void renderComputerCards()
-{
-    SDL_Rect destinationRect;
-
-    // init 3 cards
-    destinationRect = {50, SCREEN_HEIGHT / 2 - 145, 100, 145};
-    SDL_RenderCopy(gRenderer, backTexture, NULL, &destinationRect);
-    destinationRect = {SCREEN_WIDTH - 200, SCREEN_HEIGHT / 2 - 145, 100, 145};
-    SDL_RenderCopy(gRenderer, backTexture, NULL, &destinationRect);
-    destinationRect = {SCREEN_WIDTH / 2 - 100, 5, 100, 145};
-    SDL_RenderCopy(gRenderer, backTexture, NULL, &destinationRect);
-}

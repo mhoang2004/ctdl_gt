@@ -1,5 +1,6 @@
 #pragma once
 
+#include <bits/stdc++.h>
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_image.h>
 #include <stdio.h>
@@ -12,8 +13,9 @@ using namespace std;
 const int SCREEN_WIDTH = 1250;
 const int SCREEN_HEIGHT = 700;
 
-#include "src/module/image.h"
+#include "src/module/texture.h"
 #include "src/module/card.h"
+#include "src/module/render.h"
 #include "src/module/user.h"
 
 bool init()
@@ -178,6 +180,7 @@ int main(int argc, char *args[])
 
                         renderBackCard();
                         renderComputerCards();
+                        renderHistory(history);
 
                         player.printCards();
 

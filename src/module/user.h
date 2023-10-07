@@ -4,6 +4,8 @@
 #include "algorithms.h"
 using namespace std;
 
+vector<vector<Card>> history;
+
 class User
 {
 private:
@@ -90,11 +92,30 @@ public:
 
     void hit()
     {
-        int len = selectedCards.size();
+        int selectedCardLen = selectedCards.size();
 
         // check is valid cards?
 
-        for (int i = 0; i < len; i++)
+        // sort selected cards
+        sort(selectedCards.begin(), selectedCards.end());
+
+        // append history
+        int historyIndex = history.size();
+        if (historyIndex > 2)
+        {
+            history.clear();
+        }
+
+        vector<Card> temp;
+        for (int index : selectedCards)
+        {
+            temp.push_back(userCards[index]);
+        }
+        history.push_back(temp);
+
+        renderHistory(history);
+
+        for (int i = selectedCardLen - 1; i >= 0; i--)
         {
             userCards.erase(userCards.begin() + selectedCards[i]);
             cardCount--;
