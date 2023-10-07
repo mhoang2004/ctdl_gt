@@ -113,10 +113,24 @@ int main(int argc, char *args[])
         // Event handler
         SDL_Event e;
 
-        User player;
+        // init user's 13 cards
+        User player(plCards);
 
-        // init 13 cards
-        player.initUserCards(plCards);
+        // init computer
+        vector<User> computers;
+        User computer1(plCards);
+        User computer2(plCards);
+        User computer3(plCards);
+        computers.push_back(computer1);
+        computers.push_back(computer2);
+        computers.push_back(computer3);
+
+        // init users
+        vector<User> users;
+        users.push_back(computer1);
+        users.push_back(computer2);
+        users.push_back(computer3);
+        users.push_back(player);
 
         backTexture = loadTexture("src/cards/BACK.png");
         hitBtnTexture = loadTexture("src/image/play.png");
@@ -125,7 +139,7 @@ int main(int argc, char *args[])
         renderBackCard();
         renderComputerCards();
 
-        // Render init cards
+        // Render cards
         player.printCards();
 
         // Update screen
@@ -195,11 +209,35 @@ int main(int argc, char *args[])
                         renderComputerCards();
 
                         player.hit();
+                        renderHistory(history);
 
                         player.printCards();
 
                         SDL_RenderPresent(gRenderer);
                     }
+                }
+
+                if (!player.isUserTurn())
+                {
+                    for (User computer : computers)
+                    {
+                        SDL_Delay(1000);
+
+                        computer.changeSelected(0);
+
+                        SDL_RenderClear(gRenderer);
+
+                        renderBackCard();
+                        renderComputerCards();
+
+                        computer.hit();
+                        renderHistory(history);
+
+                        player.printCards();
+
+                        SDL_RenderPresent(gRenderer);
+                    }
+                    player.setUserTurn(true);
                 }
             }
         }

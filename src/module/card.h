@@ -51,6 +51,11 @@ public:
 		SDL_SetTextureColorMod(texture, 120, 120, 120);
 	}
 
+	void normalColor()
+	{
+		SDL_SetTextureColorMod(texture, 255, 255, 255);
+	}
+
 	void setTexture(SDL_Texture *texture)
 	{
 		this->texture = texture;

@@ -19,15 +19,18 @@ private:
     int cardCount = 13;
     bool isFirst = false;
     bool isSpecial = false;
+    bool isTurn = false;
 
 public:
-    void initUserCards(PlayingCards &plCards)
+    User(PlayingCards &plCards)
     {
         for (int i = 0; i < 13; i++)
         {
             Card lastCard = plCards.get1Card();
             this->userCards.push_back(lastCard);
         }
+
+        isFirstUser();
     }
 
     void sortCard()
@@ -97,6 +100,9 @@ public:
 
         // check is valid cards?
 
+        // change turn (no user's turn)
+        isTurn = false;
+
         // sort selected cards
         sort(selectedCards.begin(), selectedCards.end());
 
@@ -114,8 +120,6 @@ public:
         }
         history.push_back(temp);
 
-        renderHistory(history);
-
         for (int i = selectedCardLen - 1; i >= 0; i--)
         {
             userCards.erase(userCards.begin() + selectedCards[i]);
@@ -125,16 +129,26 @@ public:
         selectedCards.clear();
     }
 
-    // void isFirstUserCard()
-    // {
-    //     for (const Card &card : this->userCards)
-    //     {
-    //         if (card.getSuits() == 6 && card.getValue() == 3)
-    //         {
-    //             this->isFirst = true;
-    //         }
-    //     }
-    // }
+    void isFirstUser()
+    {
+        for (Card card : userCards)
+        {
+            if (card.getSuits() == SPADES && card.getValue() == 3)
+            {
+                this->isTurn = true;
+            }
+        }
+    }
+
+    bool isUserTurn()
+    {
+        return isTurn;
+    }
+
+    void setUserTurn(bool value)
+    {
+        isTurn = value;
+    }
     // int countSuits()
     // {
     //     int countBlack = 0;
