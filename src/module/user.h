@@ -273,7 +273,6 @@ public:
     {
         // create a random card for performance
         vector<Card> demoCards = history.back();
-        cout << history.size() << endl;
 
         int initX, initY, padding;
 

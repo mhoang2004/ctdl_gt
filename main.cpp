@@ -212,41 +212,48 @@ int main(int argc, char *args[])
 
                         SDL_RenderPresent(gRenderer);
                     }
-                }
 
-                if (!player.isUserTurn())
-                {
-                    for (int i = 0; i < 3; i++)
+                    SDL_Rect skipBtnArea = {210, 450, 135, 59};
+                    if (mouseX >= skipBtnArea.x && mouseX <= skipBtnArea.x + skipBtnArea.w &&
+                        mouseY >= skipBtnArea.y && mouseY <= skipBtnArea.y + skipBtnArea.h)
                     {
-                        SDL_Delay(1000);
-
-                        computers[i].changeSelected(0);
-                        computers[i].changeSelected(1);
-
-                        computers[i].hit();
-
-                        // from which computer?
-                        computers[i].animationCard(computers[i].getId());
-
-                        SDL_RenderClear(gRenderer);
-
-                        renderBtn();
-                        renderComputerCards();
-                        player.printCards();
-
-                        renderHistory(history);
-
-                        SDL_RenderPresent(gRenderer);
+                        player.setUserTurn(false);
                     }
 
-                    player.setUserTurn(true);
+                    if (!player.isUserTurn())
+                    {
+                        for (int i = 0; i < 3; i++)
+                        {
+                            SDL_Delay(500);
+
+                            computers[i].changeSelected(0);
+                            computers[i].changeSelected(1);
+
+                            computers[i].hit();
+
+                            // from which computer?
+                            computers[i].animationCard(computers[i].getId());
+
+                            SDL_RenderClear(gRenderer);
+
+                            renderBtn();
+                            renderComputerCards();
+                            player.printCards();
+
+                            renderHistory(history);
+
+                            SDL_RenderPresent(gRenderer);
+                        }
+
+                        player.setUserTurn(true);
+                    }
                 }
             }
         }
+
+        // Free resources and close SDL
+        close();
+
+        return 0;
     }
-
-    // Free resources and close SDL
-    close();
-
-    return 0;
 }
