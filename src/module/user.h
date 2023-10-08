@@ -17,6 +17,7 @@ private:
 
     int money = 0;
     int cardCount = 13;
+
     bool isFirst = false;
     bool isSpecial = false;
     bool isTurn = false;
@@ -46,11 +47,6 @@ public:
     int getCardCount()
     {
         return this->cardCount;
-    }
-
-    void setCardCount(int num)
-    {
-        this->cardCount -= num;
     }
 
     void clearUserCards()
@@ -100,15 +96,15 @@ public:
 
         // check is valid cards?
 
-        // change turn (no user's turn)
+        // change turn (if not user's turn)
         isTurn = false;
 
         // sort selected cards
         sort(selectedCards.begin(), selectedCards.end());
 
         // append history
-        int historyIndex = history.size();
-        if (historyIndex > 2)
+        int historyLen = history.size();
+        if (historyLen > 2)
         {
             history.clear();
         }
@@ -149,6 +145,9 @@ public:
     {
         isTurn = value;
     }
+
+    // change this function's name, which computer hit
+
     // int countSuits()
     // {
     //     int countBlack = 0;
@@ -252,4 +251,91 @@ public:
     //         this->isSpecial = true;
     //     }
     // }
+};
+
+class Computer : public User
+{
+private:
+    int id;
+
+public:
+    Computer(int id, PlayingCards &plCards) : User(plCards)
+    {
+        this->id = id;
+    }
+
+    int getId()
+    {
+        return this->id;
+    }
+
+    void animationCard(int id)
+    {
+        // create a random card for performance
+        vector<Card> demoCards = history.back();
+        cout << history.size() << endl;
+
+        int initX, initY, padding;
+
+        if (id == 1)
+        {
+            initX = 50;
+            initY = SCREEN_HEIGHT / 2 - 145;
+
+            padding = 0;
+            for (Card demoCard : demoCards)
+            {
+                demoCard.setWidth(80);
+                demoCard.setHeight(116);
+                demoCard.normalColor();
+                demoCard.setX(initX + padding);
+                demoCard.setY(initY);
+
+                SDL_RenderCopy(gRenderer, demoCard.getTexture(), NULL, demoCard.getDestinationRect());
+
+                padding += 40;
+            }
+        }
+        else if (id == 2)
+        {
+            initX = SCREEN_WIDTH / 2 - 100;
+            initY = 5;
+
+            padding = 0;
+            for (Card demoCard : demoCards)
+            {
+                demoCard.setWidth(80);
+                demoCard.setHeight(116);
+                demoCard.normalColor();
+                demoCard.setX(initX + padding);
+                demoCard.setY(initY);
+
+                SDL_RenderCopy(gRenderer, demoCard.getTexture(), NULL, demoCard.getDestinationRect());
+
+                padding += 40;
+            }
+        }
+        else
+        {
+            initX = SCREEN_WIDTH - 200;
+            initY = SCREEN_HEIGHT / 2 - 145;
+
+            padding = 0;
+            for (Card demoCard : demoCards)
+            {
+                demoCard.setWidth(80);
+                demoCard.setHeight(116);
+                demoCard.normalColor();
+                demoCard.setX(initX + padding);
+                demoCard.setY(initY);
+
+                SDL_RenderCopy(gRenderer, demoCard.getTexture(), NULL, demoCard.getDestinationRect());
+
+                padding += 40;
+            }
+        }
+
+        SDL_RenderPresent(gRenderer);
+        SDL_Delay(400);
+    }
 };

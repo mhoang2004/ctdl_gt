@@ -1,8 +1,6 @@
 #include <bits/stdc++.h>
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_image.h>
-#include <stdio.h>
-#include <string>
 #include <cstdio>
 
 using namespace std;
@@ -117,26 +115,20 @@ int main(int argc, char *args[])
         User player(plCards);
 
         // init computer
-        vector<User> computers;
-        User computer1(plCards);
-        User computer2(plCards);
-        User computer3(plCards);
+        Computer computer1(1, plCards);
+        Computer computer2(2, plCards);
+        Computer computer3(3, plCards);
+
+        vector<Computer> computers;
         computers.push_back(computer1);
         computers.push_back(computer2);
         computers.push_back(computer3);
-
-        // init users
-        vector<User> users;
-        users.push_back(computer1);
-        users.push_back(computer2);
-        users.push_back(computer3);
-        users.push_back(player);
 
         backTexture = loadTexture("src/cards/BACK.png");
         hitBtnTexture = loadTexture("src/image/play.png");
         skipBtnTexture = loadTexture("src/image/skip.png");
 
-        renderBackCard();
+        renderBtn();
         renderComputerCards();
 
         // Render cards
@@ -162,7 +154,8 @@ int main(int argc, char *args[])
                     SDL_GetMouseState(&mouseX, &mouseY);
 
                     // user cards area
-                    SDL_Rect cardArea = {50, 560, 80 * player.getCardCount() + 40, 174};
+                    int cardCout = player.getCardCount();
+                    SDL_Rect cardArea = {50, 560, 80 * cardCout + 40, 174};
                     if (mouseX >= cardArea.x && mouseX <= cardArea.x + cardArea.w &&
                         mouseY >= cardArea.y && mouseY <= cardArea.y + cardArea.h)
                     {
@@ -170,9 +163,10 @@ int main(int argc, char *args[])
 
                         // calculate the index user clicked
                         int minValue = 50;
-                        for (int i = 0; i < cardArea.w; i++)
+                        int maxValue;
+                        for (int i = 0; i < cardCout; i++)
                         {
-                            int maxValue = minValue + 80;
+                            maxValue = minValue + 80;
 
                             if (minValue < mouseX && maxValue > mouseX)
                             {
@@ -180,17 +174,20 @@ int main(int argc, char *args[])
                                 break;
                             }
 
-                            minValue = maxValue;
+                            if (i == cardCout - 1)
+                            {
+                                index = cardCout - 1;
+                                break;
+                            }
 
-                            if (index > 12)
-                                index = 12;
+                            minValue = maxValue;
                         }
 
                         player.changeSelected(index);
 
                         SDL_RenderClear(gRenderer);
 
-                        renderBackCard();
+                        renderBtn();
                         renderComputerCards();
                         renderHistory(history);
 
@@ -205,7 +202,7 @@ int main(int argc, char *args[])
                     {
                         SDL_RenderClear(gRenderer);
 
-                        renderBackCard();
+                        renderBtn();
                         renderComputerCards();
 
                         player.hit();
@@ -219,29 +216,35 @@ int main(int argc, char *args[])
 
                 if (!player.isUserTurn())
                 {
-                    for (User computer : computers)
+                    for (int i = 0; i < 3; i++)
                     {
                         SDL_Delay(1000);
 
-                        computer.changeSelected(0);
+                        computers[i].changeSelected(0);
+                        computers[i].changeSelected(1);
+
+                        computers[i].hit();
+
+                        // from which computer?
+                        computers[i].animationCard(computers[i].getId());
 
                         SDL_RenderClear(gRenderer);
 
-                        renderBackCard();
+                        renderBtn();
                         renderComputerCards();
-
-                        computer.hit();
-                        renderHistory(history);
-
                         player.printCards();
+
+                        renderHistory(history);
 
                         SDL_RenderPresent(gRenderer);
                     }
+
                     player.setUserTurn(true);
                 }
             }
         }
     }
+
     // Free resources and close SDL
     close();
 

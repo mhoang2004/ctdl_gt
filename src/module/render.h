@@ -1,5 +1,5 @@
 #pragma once
-void renderBackCard()
+void renderBtn()
 {
     SDL_Rect destinationRect;
 
@@ -16,14 +16,25 @@ void renderComputerCards()
 {
     SDL_Rect destinationRect;
 
+    int backCardWidth = 80;
+    int backCardHeight = 116;
+
     // init 3 cards
-    destinationRect = {50, SCREEN_HEIGHT / 2 - 145, 100, 145};
+
+    // id = 1
+    destinationRect = {50, SCREEN_HEIGHT / 2 - 145, backCardWidth, backCardHeight};
     SDL_RenderCopy(gRenderer, backTexture, NULL, &destinationRect);
-    destinationRect = {SCREEN_WIDTH - 200, SCREEN_HEIGHT / 2 - 145, 100, 145};
+
+    // id = 2
+    destinationRect = {SCREEN_WIDTH / 2 - 100, 5, backCardWidth, backCardHeight};
     SDL_RenderCopy(gRenderer, backTexture, NULL, &destinationRect);
-    destinationRect = {SCREEN_WIDTH / 2 - 100, 5, 100, 145};
+
+    // id = 3
+    destinationRect = {SCREEN_WIDTH - 200, SCREEN_HEIGHT / 2 - 145, backCardWidth, backCardHeight};
     SDL_RenderCopy(gRenderer, backTexture, NULL, &destinationRect);
 }
+
+// history area
 
 void renderHistory(vector<vector<Card>> history)
 {
@@ -34,8 +45,7 @@ void renderHistory(vector<vector<Card>> history)
         padding += 50;
         for (Card card : history[i])
         {
-            card.setX((SCREEN_HEIGHT / 2) + padding);
-            card.setY(300);
+
             card.setWidth(80);
             card.setHeight(116);
 
@@ -43,6 +53,9 @@ void renderHistory(vector<vector<Card>> history)
                 card.blackColor();
             else
                 card.normalColor();
+
+            card.setX((SCREEN_WIDTH / 4) + padding);
+            card.setY(250);
 
             SDL_RenderCopy(gRenderer, card.getTexture(), NULL, card.getDestinationRect());
 
