@@ -63,3 +63,11 @@ void renderHistory(vector<vector<Card>> history)
         }
     }
 }
+
+void renderPassWin()
+{
+    sleep(1);
+    SDL_Rect destinationRect;
+    destinationRect = {SCREEN_WIDTH / 2 - 280, SCREEN_HEIGHT / 2 - 280, 500, 500};
+    SDL_RenderCopy(gRenderer, passWin, NULL, &destinationRect);
+}
