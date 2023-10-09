@@ -249,7 +249,7 @@ int main(int argc, char *args[])
                         SDL_RenderPresent(gRenderer);
                     }
 
-                    SDL_Rect hitBtnArea = {800, 450, 135, 59};
+                    SDL_Rect hitBtnArea = {800, 480, 150, 65};
                     if (mouseX >= hitBtnArea.x && mouseX <= hitBtnArea.x + hitBtnArea.w &&
                         mouseY >= hitBtnArea.y && mouseY <= hitBtnArea.y + hitBtnArea.h)
                     {
@@ -267,7 +267,7 @@ int main(int argc, char *args[])
                         SDL_RenderPresent(gRenderer);
                     }
 
-                    SDL_Rect skipBtnArea = {210, 450, 135, 59};
+                    SDL_Rect skipBtnArea = {210, 480, 155, 50};
                     if (mouseX >= skipBtnArea.x && mouseX <= skipBtnArea.x + skipBtnArea.w &&
                         mouseY >= skipBtnArea.y && mouseY <= skipBtnArea.y + skipBtnArea.h)
                     {
