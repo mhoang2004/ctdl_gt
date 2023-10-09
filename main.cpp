@@ -185,7 +185,7 @@ int main(int argc, char *args[])
         {
             renderPassWin();
             SDL_RenderPresent(gRenderer);
-            sleep(3);
+            SDL_Delay(1000);
             quit = true;
         }
 
