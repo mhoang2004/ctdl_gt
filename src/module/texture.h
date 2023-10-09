@@ -3,6 +3,7 @@
 SDL_Texture *backTexture = NULL;
 SDL_Texture *hitBtnTexture = NULL;
 SDL_Texture *skipBtnTexture = NULL;
+SDL_Texture *passWin = NULL;
 
 // The window we'll be rendering to / surface
 SDL_Window *gWindow = NULL;
