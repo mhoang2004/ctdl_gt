@@ -148,109 +148,102 @@ public:
 
     // change this function's name, which computer hit
 
-    // int countSuits()
-    // {
-    //     int countBlack = 0;
-    //     int countRed = 0;
-    //     for (const Card &card : this->userCards)
-    //     {
-    //         if (card.getSuits() == 3 || card.getSuits() == 4)
-    //         {
-    //             countRed++;
-    //         }
-    //         else
-    //         {
-    //             countBlack++;
-    //         }
-    //     }
-    //     return countBlack < countRed ? countRed : countBlack;
-    // }
-    // map<int, int> getSaveCards() // Create a map to save cards
-    // {
-    //     map<int, int> saveCards;
-    //     for (const Card &card : this->userCards)
-    //     {
-    //         saveCards[card.getValue()]++;
-    //     }
-    //     return saveCards;
-    // }
-    // void isSpecialCards() // Check for a perfect hand
-    // {
-    //     map<int, int> saveCards = userCards.getSaveCards();
-    //     int count = 0; // Count couple
-    //     int countQuads = 0;
-    //     int countJack = 0;
-    //     for (pair<int, int> x : saveCards)
-    //     {
-    //         if (x.second >= 2)
-    //         {
-    //             if (x.second == 4)
-    //             {
-    //                 if (x.first == 2)
-    //                 {
-    //                     countJack++;
-    //                     break;
-    //                 }
-    //                 else
-    //                 {
-    //                     countQuads++;
-    //                 }
-    //             }
-    //             count++;
-    //         }
-    //     }
-    //     if (count == 6) // Have 6 couple
-    //     {
-    //         this->isSpecial = true;
-    //     }
-    //     else if (count == 5)
-    //     {
-    //         if (countQuads == 1) // Have 4 couple and a quad
-    //         {
-    //             this->isSpecial = true;
-    //         }
-    //         else // Have five consecutive pairs
-    //         {
-    //             int flag = 1;
-    //             int prevKey = -1;
-    //             for (pair<int, int> x : saveCards)
-    //             {
-    //                 if (x.second >= 2)
-    //                 {
-    //                     if (prevKey != -1 && x.first != prevKey + 1)
-    //                     {
-    //                         flag = -1;
-    //                         break;
-    //                     }
-    //                     prevKey = x.first;
-    //                 }
-    //             }
-    //             if (flag == 1)
-    //             {
-    //                 this->isSpecial = true;
-    //             }
-    //         }
-    //     }
-    //     else if (count == 4) // Have 2 couple and 2 quads
-    //     {
-    //         if (countQuads >= 2)
-    //         {
-    //             this->isSpecial = true;
-    //         }
-    //     }
-    //     else if (countJack == 1) // Have 4 Jack;
-    //     {
-    //         this->isSpecial = true;
-    //     }
-    //     else if (count <= 1) // 3-A
-    //     {
-    //         this->isSpecial = true;
-    //     }
-    //     else if (userCards.countSuits() >= 12) // Have 12 black cards or 12 red cards
-    //     {
-    //         this->isSpecial = true;
-    //     }
-    // }
+    int countSuits()
+    {
+        int countBlack = 0;
+        int countRed = 0;
+        for(auto &card : this->userCards)
+        {
+            if(card.getSuits() == 3 || card.getSuits() == 4)
+            {
+                countRed++;
+            }
+            else
+            {
+                countBlack++;
+            }
+        }
+        return countBlack < countRed ? countRed : countBlack;
+    }
+    map<int, int> getSaveCards() // Create a map to save cards
+    {
+        map<int, int> saveCards;
+        for(auto &card : this->userCards)
+        {
+        saveCards[card.getValue()]++;
+        }   
+        return saveCards;
+    }
+    void checkSpecialCards() // Check for a perfect hand
+    {
+        map<int, int> saveCards = getSaveCards();
+        int count = 0; // Count couple
+        int countQuads = 0; 
+        int countJack = 0;
+        for(pair<int, int> x : saveCards)
+        {
+            if(x.second >= 2)
+            {
+                if(x.second == 4)
+                {
+                    if(x.first == 2)
+                    {
+                        countJack = 1;
+                        break;
+                    }
+                    else
+                    {
+                        countQuads++;
+                    }
+                }
+                count++;
+            }
+        }
+        if(count == 6 || count == 0 || countJack == 1 || countQuads == 3 || countSuits() >= 12)
+        //Have 6 couple || 3->A  || Have 4 cards(2) || have 3 Quads || Have 12 black cards or 12 red cards
+        {
+            this->isSpecial = true;
+        }
+        else if(count == 5)
+        {
+            if(countQuads == 1) // Have 4 couple and a quad
+            {
+                this->isSpecial = true;
+            }
+            else // Have five consecutive pairs
+            {
+                int fleg = 1;
+                int prevKey = -1;
+                for(pair<int, int> x : saveCards)
+                {
+                    if(x.second >= 2)
+                    {
+                        if(prevKey != -1 && x.first != prevKey + 1)
+                        {
+                            fleg = -1;
+                            break;
+                        }
+                        prevKey = x.first;
+                    }
+                }
+                if(fleg == 1)
+                {
+                    this->isSpecial = true;
+                }
+            }
+        }
+        else if(count == 4)     //Have 2 couple and 2 quads
+        {
+            if(countQuads >= 2)
+            {
+                this->isSpecial = true;
+            }
+        }
+    }
+    bool isSpecialCards()
+    {
+        return this->isSpecial;
+    }
 };
 
 class Computer : public User
