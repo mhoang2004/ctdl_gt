@@ -104,9 +104,22 @@ int main(int argc, char *args[])
         bool quit = false;
 
         // set background
-        SDL_SetRenderDrawColor(gRenderer, 0, 255, 0, 255);
-        SDL_RenderClear(gRenderer);
-        SDL_RenderPresent(gRenderer);
+        SDL_Texture* backgroundTexture = nullptr;
+        //tao bo dem backgroundTexture de luu tru background (SDL_PIXELFORMAT_RGBA8888 định dạng pixel cho texture, SDL_TEXTUREACCESS_TARGET vẽ lên texture, SDL_TEXTUREACCESS_)
+        backgroundTexture = SDL_CreateTexture(gRenderer, SDL_PIXELFORMAT_RGBA8888, SDL_TEXTUREACCESS_TARGET, SCREEN_WIDTH, SCREEN_HEIGHT);
+       
+        
+        SDL_Surface* backgroundSurface = IMG_Load("src/image/OIP.png"); // Thay bằng đường dẫn đến hình ảnh của bạn
+        if (backgroundSurface == nullptr) {
+            printf("Failed to load image! SDL_image Error: %s\n", IMG_GetError());
+        }
+        else
+        {
+            backgroundTexture = SDL_CreateTextureFromSurface(gRenderer, backgroundSurface);// Chuyển đổi hình ảnh Surface sang Texture
+            SDL_RenderCopy(gRenderer, backgroundTexture, NULL, NULL);
+            //có NULL vì muốn thao tác với toàn bộ nội dung của texture hoặc renderer, mà không muốn áp đặt giới hạn về vị trí và kích thước.
+            SDL_FreeSurface(backgroundSurface);
+        }
 
         // Event handler
         SDL_Event e;
@@ -136,6 +149,45 @@ int main(int argc, char *args[])
 
         // Update screen
         SDL_RenderPresent(gRenderer);
+
+        int checkPass = 1;
+        player.checkSpecialCards();
+        computer1.checkSpecialCards();
+        computer2.checkSpecialCards();
+        computer3.checkSpecialCards();
+        for(int i = 0; i < 1; i++)
+        {
+            if(player.isSpecialCards())
+            {
+                passWin = loadTexture("src/image/win.png");
+                break;
+            }
+            if(computer1.isSpecialCards())
+            {
+                passWin = loadTexture("src/image/win1.png");
+                break;
+            }
+            if(computer2.isSpecialCards())
+            {
+                passWin = loadTexture("src/image/win2.png");
+                break;
+            }
+            if(computer3.isSpecialCards())
+            {
+                passWin = loadTexture("src/image/win3.png");
+                break;
+            }
+            checkPass = -1;
+            
+        }
+
+        if(checkPass == 1)
+        {
+            renderPassWin();
+            SDL_RenderPresent(gRenderer);
+            sleep(3);
+            quit = true;
+        }
 
         while (!quit)
         {
@@ -186,6 +238,7 @@ int main(int argc, char *args[])
                         player.changeSelected(index);
 
                         SDL_RenderClear(gRenderer);
+                        SDL_RenderCopy(gRenderer, backgroundTexture, NULL, NULL);
 
                         renderBtn();
                         renderComputerCards();
@@ -201,6 +254,7 @@ int main(int argc, char *args[])
                         mouseY >= hitBtnArea.y && mouseY <= hitBtnArea.y + hitBtnArea.h)
                     {
                         SDL_RenderClear(gRenderer);
+                        SDL_RenderCopy(gRenderer, backgroundTexture, NULL, NULL);
 
                         renderBtn();
                         renderComputerCards();
@@ -235,6 +289,7 @@ int main(int argc, char *args[])
                             computers[i].animationCard(computers[i].getId());
 
                             SDL_RenderClear(gRenderer);
+                            SDL_RenderCopy(gRenderer, backgroundTexture, NULL, NULL);
 
                             renderBtn();
                             renderComputerCards();
