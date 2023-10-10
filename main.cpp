@@ -132,35 +132,71 @@ int main(int argc, char *args[])
                                 SDL_RenderCopy(gRenderer, backgroundTexture, NULL, NULL);
                                 renderHistory(history);
 
-                                computer.printBackCard();
-                            }
-                            else
-                            {
-                                computer.printWinner();
-                            }
-
-                            if (!player.getIsFinish())
-                            {
-                                renderBtn();
                                 player.printCards();
-                            }
-                            else
-                            {
-                                player.printWinner();
+
+                                SDL_RenderPresent(gRenderer);
                             }
 
-                            SDL_RenderPresent(gRenderer);
+                            SDL_Rect hitBtnArea = {800, 450, 135, 59};
+                            if (mouseX >= hitBtnArea.x && mouseX <= hitBtnArea.x + hitBtnArea.w &&
+                                mouseY >= hitBtnArea.y && mouseY <= hitBtnArea.y + hitBtnArea.h)
+                            {
+                                SDL_RenderClear(gRenderer);
+                                SDL_RenderCopy(gRenderer, backgroundTexture, NULL, NULL);
+
+                                renderBtn();
+                                renderComputerCards();
+
+                                player.hit();
+                                renderHistory(history);
+
+                                player.printCards();
+
+                                SDL_RenderPresent(gRenderer);
+                            }
+
+                            SDL_Rect skipBtnArea = {210, 450, 135, 59};
+                            if (mouseX >= skipBtnArea.x && mouseX <= skipBtnArea.x + skipBtnArea.w &&
+                                mouseY >= skipBtnArea.y && mouseY <= skipBtnArea.y + skipBtnArea.h)
+                            {
+                                player.setUserTurn(false);
+                            }
+
+                            if (!player.isUserTurn())
+                            {
+                                for (int i = 0; i < 3; i++)
+                                {
+                                    SDL_Delay(500);
+
+                                    computers[i].changeSelected(0);
+                                    computers[i].changeSelected(1);
+
+                                    computers[i].hit();
+
+                                    // from which computer?
+                                    computers[i].animationCard(computers[i].getId());
+
+                                    SDL_RenderClear(gRenderer);
+                                    SDL_RenderCopy(gRenderer, backgroundTexture, NULL, NULL);
+
+                                    renderBtn();
+                                    renderComputerCards();
+                                    player.printCards();
+
+                                    renderHistory(history);
+
+                                    SDL_RenderPresent(gRenderer);
+                                }
+                            }
+
+                            player.setUserTurn(true);
                         }
                     }
-
-                    player.setUserTurn(true);
                 }
+
+                // Free resources and close SDL
+                close();
+
+                return 0;
             }
         }
-
-        // Free resources and close SDL
-        close();
-
-        return 0;
-    }
-}
