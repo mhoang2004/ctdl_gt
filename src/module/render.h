@@ -12,7 +12,7 @@ void renderBtn()
     SDL_RenderCopy(gRenderer, hitBtnTexture, NULL, &destinationRect);
 }
 
-void renderComputerCards()
+void renderBackTexture()
 {
     SDL_Rect destinationRect;
 
@@ -35,7 +35,6 @@ void renderComputerCards()
 }
 
 // history area
-
 void renderHistory(vector<vector<Card>> history)
 {
     int padding = 0;
@@ -45,7 +44,6 @@ void renderHistory(vector<vector<Card>> history)
         padding += 50;
         for (Card card : history[i])
         {
-
             card.setWidth(80);
             card.setHeight(116);
 
@@ -66,8 +64,8 @@ void renderHistory(vector<vector<Card>> history)
 
 void renderPassWin()
 {
-    sleep(1);
+    SDL_Delay(1000);
     SDL_Rect destinationRect;
     destinationRect = {SCREEN_WIDTH / 2 - 280, SCREEN_HEIGHT / 2 - 280, 500, 500};
-    SDL_RenderCopy(gRenderer, passWin, NULL, &destinationRect);
+    SDL_RenderCopy(gRenderer, winTexture, NULL, &destinationRect);
 }
