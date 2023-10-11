@@ -20,6 +20,9 @@ void hitBtnEvent(User &player, int mouseX, int mouseY)
         SDL_RenderCopy(gRenderer, backgroundTexture, NULL, NULL);
 
         player.hit();
+        if (player.checkWin())
+            player.setPlace();
+
         if (!player.getIsFinish())
         {
             renderBtn();
@@ -31,7 +34,6 @@ void hitBtnEvent(User &player, int mouseX, int mouseY)
         }
 
         renderHistory(history);
-        SDL_RenderPresent(gRenderer);
     }
 }
 
@@ -76,7 +78,5 @@ void cardSelectEvent(User &player, int mouseX, int mouseY)
         renderHistory(history);
 
         player.printCards();
-
-        SDL_RenderPresent(gRenderer);
     }
 }

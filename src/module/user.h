@@ -99,7 +99,7 @@ public:
         {
             // this opens a font style and sets a size
             TTF_Font *Lazy = TTF_OpenFont("src/fonts/Freedom-nZ4J.otf", 40);
-            SDL_Color Red = {255, 0, 0};
+            SDL_Color White = {255, 255, 255};
 
             SDL_Rect destinationRect, Message_rect;
             if (gameResult[i] == -1)
@@ -108,23 +108,41 @@ public:
                 destinationRect = {SCREEN_WIDTH / 2 - 100, SCREEN_HEIGHT / 2 + 100, 170, 170};
                 Message_rect = {SCREEN_WIDTH / 2 - 80, SCREEN_HEIGHT / 2 + 220, 100, 100};
             }
+            else if (gameResult[i] == 1)
+            {
+                winTexture = loadTexture("src/image/win1.png");
+                destinationRect = {50, SCREEN_HEIGHT / 2 - 145, 170, 170};
+                Message_rect = {30, SCREEN_HEIGHT / 2, 100, 100};
+            }
+            else if (gameResult[i] == 2)
+            {
+                winTexture = loadTexture("src/image/win2.png");
+                destinationRect = {SCREEN_WIDTH / 2 - 100, 5, 170, 170};
+                Message_rect = {SCREEN_WIDTH / 2 - 100, SCREEN_HEIGHT / 2 - 195, 100, 100};
+            }
+            else if (gameResult[i] == 3)
+            {
+                winTexture = loadTexture("src/image/win3.png");
+                destinationRect = {SCREEN_WIDTH - 200, SCREEN_HEIGHT / 2 - 145, 170, 170};
+                Message_rect = {SCREEN_WIDTH - 180, SCREEN_HEIGHT / 2, 100, 100};
+            }
 
             SDL_Surface *surfaceMessage;
             if (i == 0)
             {
-                surfaceMessage = TTF_RenderText_Solid(Lazy, "FIRST PLACE", Red);
+                surfaceMessage = TTF_RenderText_Solid(Lazy, "FIRST PLACE", White);
             }
             else if (i == 1)
             {
-                surfaceMessage = TTF_RenderText_Solid(Lazy, "SECOND PLACE", Red);
+                surfaceMessage = TTF_RenderText_Solid(Lazy, "SECOND PLACE", White);
             }
             else if (i == 2)
             {
-                surfaceMessage = TTF_RenderText_Solid(Lazy, "THIRD PLACE", Red);
+                surfaceMessage = TTF_RenderText_Solid(Lazy, "THIRD PLACE", White);
             }
             else
             {
-                surfaceMessage = TTF_RenderText_Solid(Lazy, "FOURTH PLACE", Red);
+                surfaceMessage = TTF_RenderText_Solid(Lazy, "FOURTH PLACE", White);
             }
 
             SDL_Texture *Message = SDL_CreateTextureFromSurface(gRenderer, surfaceMessage);
@@ -153,18 +171,20 @@ public:
         return isFinish;
     }
 
-    void checkWin()
+    bool checkWin()
     {
         if (cardCount == 0)
         {
             this->isFinish = true;
-            setPlace();
+            return true;
         }
         if (gameResult.size() == 3)
         {
             this->isFinish = true;
-            setPlace();
+            return true;
         }
+
+        return false;
     }
 
     void setPlace()
@@ -204,8 +224,6 @@ public:
             userCards.erase(userCards.begin() + selectedCards[i]);
             cardCount--;
         }
-
-        checkWin();
 
         selectedCards.clear();
     }
@@ -269,7 +287,6 @@ public:
         }
 
         SDL_RenderCopy(gRenderer, Message, NULL, &Message_rect);
-        SDL_RenderPresent(gRenderer);
 
         SDL_Delay(300);
     }
@@ -401,7 +418,6 @@ public:
 
             if (id == 1)
             {
-
                 destinationRect = {50, SCREEN_HEIGHT / 2 - 145, backCardWidth, backCardHeight};
                 SDL_RenderCopy(gRenderer, backTexture, NULL, &destinationRect);
             }
@@ -419,7 +435,6 @@ public:
                 destinationRect = {SCREEN_WIDTH - 200, SCREEN_HEIGHT / 2 - 145, backCardWidth, backCardHeight};
                 SDL_RenderCopy(gRenderer, backTexture, NULL, &destinationRect);
             }
-            SDL_RenderPresent(gRenderer);
         }
     }
 

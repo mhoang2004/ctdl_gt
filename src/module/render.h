@@ -12,28 +12,6 @@ void renderBtn()
     SDL_RenderCopy(gRenderer, hitBtnTexture, NULL, &destinationRect);
 }
 
-void renderBackTexture()
-{
-    SDL_Rect destinationRect;
-
-    int backCardWidth = 80;
-    int backCardHeight = 116;
-
-    // init 3 cards
-
-    // id = 1
-    destinationRect = {50, SCREEN_HEIGHT / 2 - 145, backCardWidth, backCardHeight};
-    SDL_RenderCopy(gRenderer, backTexture, NULL, &destinationRect);
-
-    // id = 2
-    destinationRect = {SCREEN_WIDTH / 2 - 100, 5, backCardWidth, backCardHeight};
-    SDL_RenderCopy(gRenderer, backTexture, NULL, &destinationRect);
-
-    // id = 3
-    destinationRect = {SCREEN_WIDTH - 200, SCREEN_HEIGHT / 2 - 145, backCardWidth, backCardHeight};
-    SDL_RenderCopy(gRenderer, backTexture, NULL, &destinationRect);
-}
-
 // history area
 void renderHistory(vector<vector<Card>> history)
 {

@@ -45,64 +45,26 @@ int main(int argc, char *args[])
 
         // init computers
         vector<Computer> computers;
-        computers.push_back(computer1);
-        computers.push_back(computer2);
-        computers.push_back(computer3);
-
-        backTexture = loadTexture("src/cards/BACK.png");
-        hitBtnTexture = loadTexture("src/image/play.png");
-        skipBtnTexture = loadTexture("src/image/skip.png");
-
-        renderBtn();
-        renderComputerCards();
-
-        // Render cards
-        player.printCards();
-
-        // Update screen
-        SDL_RenderPresent(gRenderer);
-
-        int checkPass = 1;
-        player.checkSpecialCards();
-        computer1.checkSpecialCards();
-        computer2.checkSpecialCards();
-        computer3.checkSpecialCards();
-        for (int i = 0; i < 1; i++)
+        for (int i = 0; i < COMPUTER_NUM; i++)
         {
-            if (player.isSpecialCards())
-            {
-                passWin = loadTexture("src/image/win.png");
-                break;
-            }
-            if (computer1.isSpecialCards())
-            {
-                passWin = loadTexture("src/image/win1.png");
-                break;
-            }
-            if (computer2.isSpecialCards())
-            {
-                passWin = loadTexture("src/image/win2.png");
-                break;
-            }
-            if (computer3.isSpecialCards())
-            {
-                passWin = loadTexture("src/image/win3.png");
-                break;
-            }
-            checkPass = -1;
+            // init id and 13 cards
+            Computer temp(i + 1, plCards);
+            computers.push_back(temp);
         }
 
-        if (checkPass == 1)
+        // game init
+        if (winTexture)
         {
             renderPassWin();
             SDL_RenderPresent(gRenderer);
-            sleep(3);
+            SDL_Delay(2000);
             quit = true;
         }
         else
         {
             backTexture = loadTexture("src/cards/BACK.png");
-            renderBackTexture();
+            for (Computer computer : computers)
+                computer.printBackCard();
 
             hitBtnTexture = loadTexture("src/image/play.png");
             skipBtnTexture = loadTexture("src/image/skip.png");
@@ -113,6 +75,11 @@ int main(int argc, char *args[])
 
             // Update screen
             SDL_RenderPresent(gRenderer);
+
+            if (player.isUserTurn())
+            {
+                computers[0].setUserTurn(true);
+            }
         }
 
         while (!quit)
@@ -126,11 +93,10 @@ int main(int argc, char *args[])
                     quit = true;
                 }
 
-                bool isPlayerFinish = player.getIsFinish();
                 if (e.type == SDL_MOUSEBUTTONUP)
                 {
                     // handle events
-                    if (!isPlayerFinish)
+                    if (!player.getIsFinish())
                     {
                         // event handler
                         int mouseX, mouseY;
@@ -139,104 +105,111 @@ int main(int argc, char *args[])
                         cardSelectEvent(player, mouseX, mouseY);
                         hitBtnEvent(player, mouseX, mouseY);
                         skipBtnEvent(player, mouseX, mouseY);
+
+                        for (Computer computer : computers)
+                            computer.printBackCard();
+
+                        SDL_RenderPresent(gRenderer);
                     }
                 }
+            }
 
-                for (Computer &computer : computers)
-                    computer.printBackCard();
-
-                // each turn
-                if (!player.isUserTurn() || isPlayerFinish)
+            // each turn
+            if (!player.isUserTurn() || player.getIsFinish())
+            {
+                for (int i = 0; i < COMPUTER_NUM; i++)
                 {
-                    for (Computer &computer : computers)
+                    if (!computers[i].getIsFinish() && computers[i].isUserTurn())
                     {
                         SDL_Delay(500);
 
-                        // logic computer (how computer play?)
-                        if (rand() % 2)
+                        // logic computers[i] (how computers[i] play?)
+                        if (0)
                         {
-                            computer.printSkipText(computer.getId());
+                            computers[i].printSkipText(computers[i].getId());
                         }
                         else
                         {
-                            if (computer.getCardCount() > 0)
-                                computer.changeSelected(0);
+                            // what computers[i] will hit
+                            computers[i].changeSelected(0);
 
-                            computer.hit();
-                            if (!computer.getIsFinish())
+                            computers[i].hit();
+                            if (computers[i].checkWin())
                             {
-                                // from which computer?
-                                computer.animationCard(computer.getId());
-
-                                SDL_RenderClear(gRenderer);
-                                SDL_RenderCopy(gRenderer, backgroundTexture, NULL, NULL);
-                                renderHistory(history);
-
-                                player.printCards();
-
-                                SDL_RenderPresent(gRenderer);
+                                computers[i].setPlace();
                             }
 
-                            SDL_Rect hitBtnArea = {800, 450, 135, 59};
-                            if (mouseX >= hitBtnArea.x && mouseX <= hitBtnArea.x + hitBtnArea.w &&
-                                mouseY >= hitBtnArea.y && mouseY <= hitBtnArea.y + hitBtnArea.h)
+                            SDL_Delay(500);
+
+                            // from which computers[i]?
+                            computers[i].animationCard(computers[i].getId());
+
+                            SDL_RenderClear(gRenderer);
+                            SDL_RenderCopy(gRenderer, backgroundTexture, NULL, NULL);
+
+                            // render computer card
+                            for (Computer computer : computers)
                             {
-                                SDL_RenderClear(gRenderer);
-                                SDL_RenderCopy(gRenderer, backgroundTexture, NULL, NULL);
-
-                                renderBtn();
-                                renderComputerCards();
-
-                                player.hit();
-                                renderHistory(history);
-
-                                player.printCards();
-
-                                SDL_RenderPresent(gRenderer);
-                            }
-
-                            SDL_Rect skipBtnArea = {210, 450, 135, 59};
-                            if (mouseX >= skipBtnArea.x && mouseX <= skipBtnArea.x + skipBtnArea.w &&
-                                mouseY >= skipBtnArea.y && mouseY <= skipBtnArea.y + skipBtnArea.h)
-                            {
-                                player.setUserTurn(false);
-                            }
-
-                            if (!player.isUserTurn())
-                            {
-                                for (int i = 0; i < 3; i++)
+                                if (!computer.getIsFinish())
                                 {
-                                    SDL_Delay(500);
-
-                                    computers[i].changeSelected(0);
-                                    computers[i].changeSelected(1);
-
-                                    computers[i].hit();
-
-                                    // from which computer?
-                                    computers[i].animationCard(computers[i].getId());
-
-                                    SDL_RenderClear(gRenderer);
-                                    SDL_RenderCopy(gRenderer, backgroundTexture, NULL, NULL);
-
-                                    renderBtn();
-                                    renderComputerCards();
-                                    player.printCards();
-
-                                    renderHistory(history);
-
-                                    SDL_RenderPresent(gRenderer);
+                                    computer.printBackCard();
+                                }
+                                else
+                                {
+                                    computer.printWinner();
                                 }
                             }
 
-                            player.setUserTurn(true);
+                            renderHistory(history);
+
+                            if (!player.getIsFinish())
+                            {
+                                renderBtn();
+                                player.printCards();
+                            }
+                            else
+                            {
+                                player.printWinner();
+                            }
                         }
+
+                        SDL_RenderPresent(gRenderer);
                     }
+                    if (i == COMPUTER_NUM - 1)
+                        computers[0].setUserTurn(true);
+                    else
+                        computers[i + 1].setUserTurn(true);
                 }
+                player.setUserTurn(true);
+            }
 
-                // Free resources and close SDL
-                close();
+            bool flag = true;
+            for (Computer computer : computers)
+            {
+                if (!computer.getIsFinish())
+                    flag = false;
+            }
 
-                return 0;
+            if (flag)
+            {
+                SDL_RenderClear(gRenderer);
+                SDL_RenderCopy(gRenderer, backgroundTexture, NULL, NULL);
+
+                // render computer card
+                for (Computer computer : computers)
+                {
+                    computer.printWinner();
+                }
+                player.printWinner();
+                SDL_RenderPresent(gRenderer);
+
+                SDL_Delay(5000);
+                quit = true;
             }
         }
+        // Free resources and close SDL
+        close();
+    }
+
+    return 0;
+}
