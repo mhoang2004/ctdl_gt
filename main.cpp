@@ -124,7 +124,7 @@ int main(int argc, char *args[])
                         SDL_Delay(500);
 
                         // logic computers[i] (how computers[i] play?)
-                        if (0)
+                        if (rand() % 2)
                         {
                             computers[i].printSkipText(computers[i].getId());
                         }
