@@ -16,7 +16,6 @@ private:
     vector<int> selectedCards;
 
     int money = 0;
-    int cardCount = 13;
 
     bool isFirst = false;
     bool isSpecial = false;
@@ -24,8 +23,16 @@ private:
     bool isTurn = false;
     bool isFinish = false;
 
+    SDL_Texture *winTexture = NULL;
+
 public:
     User(PlayingCards &plCards)
+    {
+        initUser(plCards);
+        this->setWinTexture();
+    }
+
+    void initUser(PlayingCards &plCards)
     {
         for (int i = 0; i < 13; i++)
         {
@@ -33,20 +40,42 @@ public:
             this->userCards.push_back(lastCard);
         }
 
-        checkSpecialCards();
+        this->isFinish = false;
 
-        if (isSpecial)
-        {
-            this->setWinTexture();
-            return;
-        }
+        checkSpecialCards();
 
         isFirstUser();
     }
 
+    void setWinTexture(int id = -1)
+    {
+        if (id == -1)
+        {
+            winTexture = loadTexture("src/image/win.png");
+        }
+        if (id == 1)
+        {
+            winTexture = loadTexture("src/image/win1.png");
+        }
+        if (id == 2)
+        {
+            winTexture = loadTexture("src/image/win2.png");
+        }
+        if (id == 3)
+        {
+            winTexture = loadTexture("src/image/win3.png");
+        }
+    }
+
+    int getCardCount()
+    {
+        return userCards.size();
+    }
+
     void sortCard()
     {
-        mergeSort(this->userCards, 0, this->cardCount - 1);
+        int cardCount = getCardCount();
+        mergeSort(userCards, 0, cardCount - 1);
     }
 
     vector<Card> getUserCards()
@@ -54,24 +83,17 @@ public:
         return userCards;
     }
 
-    int getCardCount()
-    {
-        return this->cardCount;
-    }
-
     void clearUserCards()
     {
         this->userCards.clear();
     }
 
-    void setWinTexture()
-    {
-        winTexture = loadTexture("src/image/win.png");
-    }
-
     void printCards()
     {
         sortCard();
+
+        int cardCount = getCardCount();
+
         for (int i = 0; i < cardCount; i++)
         {
             userCards[i].setX(i * 80 + 50);
@@ -95,60 +117,40 @@ public:
     {
         int len = gameResult.size(); // length of gamerResult
 
+        // this opens a font style and sets a size
+        TTF_Font *Lazy = TTF_OpenFont("src/fonts/Freedom-nZ4J.otf", 40);
+        SDL_Color White = {255, 255, 255};
+
         for (int i = 0; i < len; i++)
         {
-            // this opens a font style and sets a size
-            TTF_Font *Lazy = TTF_OpenFont("src/fonts/Freedom-nZ4J.otf", 40);
-            SDL_Color White = {255, 255, 255};
-
             SDL_Rect destinationRect, Message_rect;
             if (gameResult[i] == -1)
             {
-                winTexture = loadTexture("src/image/win.png");
                 destinationRect = {SCREEN_WIDTH / 2 - 100, SCREEN_HEIGHT / 2 + 100, 170, 170};
                 Message_rect = {SCREEN_WIDTH / 2 - 80, SCREEN_HEIGHT / 2 + 220, 100, 100};
-            }
-            else if (gameResult[i] == 1)
-            {
-                winTexture = loadTexture("src/image/win1.png");
-                destinationRect = {50, SCREEN_HEIGHT / 2 - 145, 170, 170};
-                Message_rect = {30, SCREEN_HEIGHT / 2, 100, 100};
-            }
-            else if (gameResult[i] == 2)
-            {
-                winTexture = loadTexture("src/image/win2.png");
-                destinationRect = {SCREEN_WIDTH / 2 - 100, 5, 170, 170};
-                Message_rect = {SCREEN_WIDTH / 2 - 100, SCREEN_HEIGHT / 2 - 195, 100, 100};
-            }
-            else if (gameResult[i] == 3)
-            {
-                winTexture = loadTexture("src/image/win3.png");
-                destinationRect = {SCREEN_WIDTH - 200, SCREEN_HEIGHT / 2 - 145, 170, 170};
-                Message_rect = {SCREEN_WIDTH - 180, SCREEN_HEIGHT / 2, 100, 100};
-            }
 
-            SDL_Surface *surfaceMessage;
-            if (i == 0)
-            {
-                surfaceMessage = TTF_RenderText_Solid(Lazy, "FIRST PLACE", White);
-            }
-            else if (i == 1)
-            {
-                surfaceMessage = TTF_RenderText_Solid(Lazy, "SECOND PLACE", White);
-            }
-            else if (i == 2)
-            {
-                surfaceMessage = TTF_RenderText_Solid(Lazy, "THIRD PLACE", White);
-            }
-            else
-            {
-                surfaceMessage = TTF_RenderText_Solid(Lazy, "FOURTH PLACE", White);
-            }
+                SDL_Surface *surfaceMessage;
+                if (i == 0)
+                {
+                    surfaceMessage = TTF_RenderText_Solid(Lazy, "FIRST PLACE", White);
+                }
+                else if (i == 1)
+                {
+                    surfaceMessage = TTF_RenderText_Solid(Lazy, "SECOND PLACE", White);
+                }
+                else if (i == 2)
+                {
+                    surfaceMessage = TTF_RenderText_Solid(Lazy, "THIRD PLACE", White);
+                }
+                else if (i == 3)
+                {
+                    surfaceMessage = TTF_RenderText_Solid(Lazy, "FOURTH PLACE", White);
+                }
+                SDL_Texture *Message = SDL_CreateTextureFromSurface(gRenderer, surfaceMessage);
 
-            SDL_Texture *Message = SDL_CreateTextureFromSurface(gRenderer, surfaceMessage);
-
-            SDL_RenderCopy(gRenderer, Message, NULL, &Message_rect);
-            SDL_RenderCopy(gRenderer, winTexture, NULL, &destinationRect);
+                SDL_RenderCopy(gRenderer, Message, NULL, &Message_rect);
+                SDL_RenderCopy(gRenderer, this->winTexture, NULL, &destinationRect);
+            }
         }
     }
 
@@ -173,7 +175,7 @@ public:
 
     bool checkWin()
     {
-        if (cardCount == 0)
+        if (getCardCount() == 0)
         {
             this->isFinish = true;
             return true;
@@ -222,7 +224,6 @@ public:
         for (int i = selectedCardLen - 1; i >= 0; i--)
         {
             userCards.erase(userCards.begin() + selectedCards[i]);
-            cardCount--;
         }
 
         selectedCards.clear();
@@ -230,6 +231,7 @@ public:
 
     void isFirstUser()
     {
+        this->isTurn = false;
         for (Card card : userCards)
         {
             if (card.getSuits() == SPADES && card.getValue() == 3)
@@ -317,6 +319,7 @@ public:
         }
         return saveCards;
     }
+
     void checkSpecialCards() // Check for a perfect hand
     {
         map<int, int> saveCards = getSaveCards();
@@ -387,6 +390,11 @@ public:
     {
         return this->isSpecial;
     }
+
+    SDL_Texture *getWinTexture()
+    {
+        return winTexture;
+    }
 };
 
 class Computer : public User
@@ -398,6 +406,7 @@ public:
     Computer(int id, PlayingCards &plCards) : User(plCards)
     {
         this->id = id;
+        this->setWinTexture(id);
     }
 
     int getId()
@@ -512,19 +521,58 @@ public:
         gameResult.push_back(id);
     }
 
-    void setWinTexture()
+    void printWinner()
     {
-        if (id == 1)
+        int len = gameResult.size(); // length of gamerResult
+
+        // this opens a font style and sets a size
+        TTF_Font *Lazy = TTF_OpenFont("src/fonts/Freedom-nZ4J.otf", 40);
+        SDL_Color White = {255, 255, 255};
+
+        for (int i = 0; i < len; i++)
         {
-            winTexture = loadTexture("src/image/win1.png");
-        }
-        if (id == 2)
-        {
-            winTexture = loadTexture("src/image/win2.png");
-        }
-        if (id == 3)
-        {
-            winTexture = loadTexture("src/image/win3.png");
+            if (id == gameResult[i])
+            {
+                SDL_Rect destinationRect, Message_rect;
+                if (id == 1)
+                {
+                    destinationRect = {50, SCREEN_HEIGHT / 2 - 145, 170, 170};
+                    Message_rect = {30, SCREEN_HEIGHT / 2, 100, 100};
+                }
+                else if (id == 2)
+                {
+                    destinationRect = {SCREEN_WIDTH / 2 - 100, 5, 170, 170};
+                    Message_rect = {SCREEN_WIDTH / 2 - 100, SCREEN_HEIGHT / 2 - 195, 100, 100};
+                }
+                else if (id == 3)
+                {
+                    destinationRect = {SCREEN_WIDTH - 200, SCREEN_HEIGHT / 2 - 145, 170, 170};
+                    Message_rect = {SCREEN_WIDTH - 180, SCREEN_HEIGHT / 2, 100, 100};
+                }
+
+                SDL_Surface *surfaceMessage;
+                if (i == 0)
+                {
+                    surfaceMessage = TTF_RenderText_Solid(Lazy, "FIRST PLACE", White);
+                }
+                else if (i == 1)
+                {
+                    surfaceMessage = TTF_RenderText_Solid(Lazy, "SECOND PLACE", White);
+                }
+                else if (i == 2)
+                {
+                    surfaceMessage = TTF_RenderText_Solid(Lazy, "THIRD PLACE", White);
+                }
+                else if (i == 3)
+                {
+                    surfaceMessage = TTF_RenderText_Solid(Lazy, "FOURTH PLACE", White);
+                }
+
+                SDL_Texture *Message = SDL_CreateTextureFromSurface(gRenderer, surfaceMessage);
+
+                SDL_RenderCopy(gRenderer, Message, NULL, &Message_rect);
+                SDL_RenderCopy(gRenderer, getWinTexture(), NULL, &destinationRect);
+            }
         }
     }
 };

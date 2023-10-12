@@ -12,6 +12,15 @@ void renderBtn()
     SDL_RenderCopy(gRenderer, hitBtnTexture, NULL, &destinationRect);
 }
 
+void renderAgainBtn()
+{
+    SDL_Rect destinationRect;
+
+    // again btn
+    destinationRect = {470, 300, 155, 50};
+    SDL_RenderCopy(gRenderer, againBtnTexture, NULL, &destinationRect);
+}
+
 // history area
 void renderHistory(vector<vector<Card>> history)
 {
@@ -40,10 +49,10 @@ void renderHistory(vector<vector<Card>> history)
     }
 }
 
-void renderPassWin()
+void renderPassWin(SDL_Texture *winTexture)
 {
     SDL_Delay(1000);
     SDL_Rect destinationRect;
-    destinationRect = {SCREEN_WIDTH / 2 - 280, SCREEN_HEIGHT / 2 - 280, 500, 500};
+    destinationRect = {SCREEN_WIDTH / 2 - 280, SCREEN_HEIGHT / 2 - 280, 250, 250};
     SDL_RenderCopy(gRenderer, winTexture, NULL, &destinationRect);
 }

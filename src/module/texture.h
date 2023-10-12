@@ -4,7 +4,7 @@ SDL_Texture *backgroundTexture = NULL;
 SDL_Texture *backTexture = NULL;
 SDL_Texture *hitBtnTexture = NULL;
 SDL_Texture *skipBtnTexture = NULL;
-SDL_Texture *winTexture = NULL;
+SDL_Texture *againBtnTexture = NULL;
 
 SDL_Texture *loadTexture(string path)
 {
