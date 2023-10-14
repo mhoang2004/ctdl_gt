@@ -1,39 +1,45 @@
 void skipBtnEvent(User &player, int mouseX, int mouseY)
 {
-    SDL_Rect skipBtnArea = {210, 450, 135, 59};
+    SDL_Rect skipBtnArea = {210, 440, 135, 59};
     if (mouseX >= skipBtnArea.x && mouseX <= skipBtnArea.x + skipBtnArea.w &&
         mouseY >= skipBtnArea.y && mouseY <= skipBtnArea.y + skipBtnArea.h)
     {
-        player.setUserTurn(false);
-        player.printSkipText();
-        player.setSkip(true);
+        if (!player.isFirstUser())
+        {
+            player.setUserTurn(false);
+            player.printSkipText();
+            player.setSkip(true);
+        }
     }
 }
 
 void hitBtnEvent(User &player, int mouseX, int mouseY)
 {
-    SDL_Rect hitBtnArea = {800, 450, 135, 59};
-    if (mouseX >= hitBtnArea.x && mouseX <= hitBtnArea.x + hitBtnArea.w &&
-        mouseY >= hitBtnArea.y && mouseY <= hitBtnArea.y + hitBtnArea.h)
+    if (player.isUserTurn())
     {
-        SDL_RenderClear(gRenderer);
-        SDL_RenderCopy(gRenderer, backgroundTexture, NULL, NULL);
-
-        player.hit();
-        if (player.checkWin())
-            player.setPlace();
-
-        if (!player.getIsFinish())
+        SDL_Rect hitBtnArea = {800, 440, 135, 59};
+        if (mouseX >= hitBtnArea.x && mouseX <= hitBtnArea.x + hitBtnArea.w &&
+            mouseY >= hitBtnArea.y && mouseY <= hitBtnArea.y + hitBtnArea.h)
         {
-            renderBtn();
-            player.printCards();
-        }
-        else
-        {
-            player.printWinner();
-        }
+            SDL_RenderClear(gRenderer);
+            SDL_RenderCopy(gRenderer, backgroundTexture, NULL, NULL);
 
-        renderHistory(history);
+            player.hit();
+            if (player.checkWin())
+                player.setPlace();
+
+            if (!player.getIsFinish())
+            {
+                renderBtn();
+                player.printCards();
+            }
+            else
+            {
+                player.printWinner();
+            }
+
+            renderHistory(history);
+        }
     }
 }
 

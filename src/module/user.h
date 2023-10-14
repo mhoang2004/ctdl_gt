@@ -203,6 +203,7 @@ public:
 
         // change turn (if not user's turn)
         isTurn = false;
+        isFirst = false;
 
         // sort selected cards
         sort(selectedCards.begin(), selectedCards.end());
@@ -229,7 +230,7 @@ public:
         selectedCards.clear();
     }
 
-    void isFirstUser()
+    bool isFirstUser()
     {
         this->isTurn = false;
         for (Card card : userCards)
@@ -237,8 +238,10 @@ public:
             if (card.getSuits() == SPADES && card.getValue() == 3)
             {
                 this->isTurn = true;
+                return true;
             }
         }
+        return false;
     }
 
     bool isUserTurn()
@@ -249,6 +252,16 @@ public:
     void setUserTurn(bool value)
     {
         isTurn = value;
+    }
+
+    void setIsFirst(bool value)
+    {
+        isFirst = value;
+    }
+
+    bool getIsFirst()
+    {
+        return isFirst;
     }
 
     void setSkip(bool value)

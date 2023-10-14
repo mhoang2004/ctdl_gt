@@ -4,11 +4,11 @@ void renderBtn()
     SDL_Rect destinationRect;
 
     // play btn
-    destinationRect = {210, 480, 155, 50};
+    destinationRect = {210, 440, 155, 50};
     SDL_RenderCopy(gRenderer, skipBtnTexture, NULL, &destinationRect);
 
     // skip btn
-    destinationRect = {800, 480, 150, 65};
+    destinationRect = {800, 440, 150, 65};
     SDL_RenderCopy(gRenderer, hitBtnTexture, NULL, &destinationRect);
 }
 
