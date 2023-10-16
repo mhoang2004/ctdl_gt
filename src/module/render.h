@@ -1,22 +1,21 @@
 #pragma once
-void renderBtn()
+
+void renderHitBtn()
 {
     SDL_Rect destinationRect;
-
-    // play btn
-    destinationRect = {210, 440, 155, 50};
-    SDL_RenderCopy(gRenderer, skipBtnTexture, NULL, &destinationRect);
-
-    // skip btn
     destinationRect = {800, 440, 150, 65};
     SDL_RenderCopy(gRenderer, hitBtnTexture, NULL, &destinationRect);
 }
 
+void renderSkipBtn()
+{
+    SDL_Rect destinationRect;
+    destinationRect = {210, 440, 155, 50};
+    SDL_RenderCopy(gRenderer, skipBtnTexture, NULL, &destinationRect);
+}
 void renderAgainBtn()
 {
     SDL_Rect destinationRect;
-
-    // again btn
     destinationRect = {470, 300, 155, 50};
     SDL_RenderCopy(gRenderer, againBtnTexture, NULL, &destinationRect);
 }

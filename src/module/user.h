@@ -6,6 +6,7 @@
 using namespace std;
 
 vector<vector<Card>> history;
+vector<int> gameResult;
 
 class User
 {
@@ -45,6 +46,11 @@ public:
         checkSpecialCards();
 
         isFirstUser();
+    }
+
+    int selectedCardsLen()
+    {
+        return selectedCards.size();
     }
 
     void setWinTexture(int id = -1)
@@ -230,28 +236,17 @@ public:
         selectedCards.clear();
     }
 
-    bool isFirstUser()
+    void isFirstUser()
     {
-        this->isTurn = false;
+        isTurn = false;
         for (Card card : userCards)
         {
             if (card.getSuits() == SPADES && card.getValue() == 3)
             {
-                this->isTurn = true;
-                return true;
+                isTurn = true;
+                isFirst = true;
             }
         }
-        return false;
-    }
-
-    bool isUserTurn()
-    {
-        return isTurn;
-    }
-
-    void setUserTurn(bool value)
-    {
-        isTurn = value;
     }
 
     void setIsFirst(bool value)
@@ -262,6 +257,16 @@ public:
     bool getIsFirst()
     {
         return isFirst;
+    }
+
+    bool isUserTurn()
+    {
+        return isTurn;
+    }
+
+    void setUserTurn(bool value)
+    {
+        isTurn = value;
     }
 
     void setSkip(bool value)
@@ -302,8 +307,6 @@ public:
         }
 
         SDL_RenderCopy(gRenderer, Message, NULL, &Message_rect);
-
-        SDL_Delay(300);
     }
 
     int countSuits()
