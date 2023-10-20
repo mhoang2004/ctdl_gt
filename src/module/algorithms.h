@@ -84,3 +84,19 @@ void mergeSort(vector<Card> &arr, int l, int r)
         merge(arr, l, m, r);
     }
 }
+
+void selectionSort(int value[], int number)
+{
+    int i, key, j;
+    for (i = 1; i < number; i++)
+    {
+        key = value[i];
+        j = i - 1;
+        while (j >= 0 && value[j] > key)
+        {
+            value[j + 1] = value[j];
+            j = j - 1;
+        }
+        value[j + 1] = key;
+    }
+}

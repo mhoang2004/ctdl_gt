@@ -40,6 +40,9 @@ void playAgain(PlayingCards &plCards, User &player, vector<Computer> &computers)
     SDL_RenderClear(gRenderer);
     SDL_RenderCopy(gRenderer, backgroundTexture, NULL, NULL);
 
+    history.clear();
+    gameResult.clear();
+
     srand(time(0));
 
     plCards.createPlayingCards();

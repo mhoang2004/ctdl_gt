@@ -42,6 +42,7 @@ public:
         }
 
         this->isFinish = false;
+        this->isSkip = false;
 
         checkSpecialCards();
 
@@ -201,11 +202,99 @@ public:
         gameResult.push_back(-1);
     }
 
+    bool checkSequence(int value[], int selectedCardLen)
+    {
+        for (int i = 0; i < selectedCardLen; i++)
+        {
+            if (value[i] == 15)
+                return 0;
+        }
+        selectionSort(value, selectedCardLen);
+        for (int i = 0; i < selectedCardLen - 1; i++)
+        {
+            if (value[selectedCardLen - 1] != value[i] + selectedCardLen - i - 1)
+            {
+                return 0;
+            }
+        }
+        return 1;
+    }
+
+    bool checkTriple(int selectedCard)
+    {
+        for (int i = 0; i < selectedCard; i++)
+        {
+            if (userCards[selectedCards[i]].getValue() == 15)
+                return 0;
+        }
+        if (selectedCard % 2 == 1)
+            return 0;
+
+        int *tmp_1_value = new int[selectedCard / 2];
+        int *tmp_2_value = new int[selectedCard / 2];
+        int n1 = 0;
+        int n2 = 0;
+        for (int i = 0; i < selectedCard; i += 2)
+        {
+            tmp_1_value[n1] = userCards[selectedCards[i]].getValue();
+            n1++;
+        }
+        for (int i = 1; i < selectedCard; i += 2)
+        {
+            tmp_2_value[n2] = userCards[selectedCards[i]].getValue();
+            n2++;
+        }
+        if (!checkSequence(tmp_1_value, n1))
+            return 0;
+
+        for (int i = 0; i < n1; i++)
+        {
+            if (tmp_1_value[i] != tmp_2_value[i])
+                return 0;
+        }
+        return 1;
+    }
+
+    bool checkDouble(int selectedCard)
+    {
+        for (int i = 1; i < selectedCard; i++)
+            if (userCards[selectedCards[0]].getValue() != userCards[selectedCards[i]].getValue())
+                return 0;
+        return 1;
+    }
+
+    bool check(int selectedCardLen)
+    {
+        if (selectedCardLen == 1)
+            return 1;
+        if (selectedCardLen >= 6)
+            if (checkTriple(selectedCardLen) == 1)
+                return 1;
+        if (selectedCardLen > 2)
+        {
+            int value[13];
+            for (int i = 0; i < selectedCardLen; i++)
+            {
+                value[i] = userCards[selectedCards[i]].getValue();
+            }
+            if (checkSequence(value, selectedCardLen))
+                return 1;
+        }
+        if (selectedCardLen >= 2)
+            if (checkDouble(selectedCardLen))
+                return 1;
+        return 0;
+    }
+
     void hit()
     {
         int selectedCardLen = selectedCards.size();
 
         // check is valid cards?
+        if (!check(selectedCardLen))
+        {
+            return;
+        }
 
         // change turn (if not user's turn)
         isTurn = false;
@@ -239,6 +328,7 @@ public:
     void isFirstUser()
     {
         isTurn = false;
+        isFirst = false;
         for (Card card : userCards)
         {
             if (card.getSuits() == SPADES && card.getValue() == 3)

@@ -14,7 +14,7 @@ void doneTurn(User &player, vector<Computer> &computers)
         }
     }
 
-    if (count == 3)
+    if (count == 3 - gameResult.size())
     {
         if (!player.getSkip())
         {
@@ -78,21 +78,20 @@ void doneTurn(User &player, vector<Computer> &computers)
             player.printSkipText();
         }
 
-        cout << "------------------" << endl;
-        cout << "Player: " << player.getIsFirst() << endl;
-
         // print skip text and back cards
         for (Computer computer : computers)
         {
+            if (computer.getIsFinish())
+            {
+                computer.printWinner();
+            }
             computer.printBackCard();
+
             if (computer.getSkip())
             {
                 computer.printSkipText(computer.getId());
             }
-
-            cout << "Com0: " << computer.getIsFirst() << endl;
         }
-        cout << "------------------" << endl;
 
         SDL_Delay(500);
         SDL_RenderPresent(gRenderer);
