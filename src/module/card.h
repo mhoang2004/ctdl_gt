@@ -79,7 +79,7 @@ public:
 	}
 	void setPath(string rank, int suit)
 	{
-		this->path = "src/cards/";
+		this->path = "src/cards/cards2/";
 		this->path += rank;
 		this->path += "-";
 
