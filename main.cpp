@@ -184,8 +184,19 @@ int main(int argc, char *args[])
 
                         // event handler
                         cardSelectEvent(player, computers, mouseX, mouseY);
-                        hitBtnEvent(player, computers, mouseX, mouseY);
-                        skipBtnEvent(player, computers, mouseX, mouseY);
+
+                        if (mouseX >= skipBtnArea.x && mouseX <= skipBtnArea.x + skipBtnArea.w &&
+                            mouseY >= skipBtnArea.y && mouseY <= skipBtnArea.y + skipBtnArea.h)
+                        {
+                            skipBtnEvent(player, computers);
+                        }
+
+                        if (mouseX >= hitBtnArea.x && mouseX <= hitBtnArea.x + hitBtnArea.w &&
+                            mouseY >= hitBtnArea.y && mouseY <= hitBtnArea.y + hitBtnArea.h)
+                        {
+
+                            hitBtnEvent(player, computers);
+                        }
 
                         SDL_RenderPresent(gRenderer);
                     }
@@ -193,7 +204,6 @@ int main(int argc, char *args[])
                     // play again btn event
                     if (isGameFinish)
                     {
-                        SDL_Rect againBtnArea = {470, 300, 155, 50};
                         if (mouseX >= againBtnArea.x && mouseX <= againBtnArea.x + againBtnArea.w &&
                             mouseY >= againBtnArea.y && mouseY <= againBtnArea.y + againBtnArea.h)
                         {
@@ -201,6 +211,30 @@ int main(int argc, char *args[])
                             playAgain(plCards, player, computers);
                         }
                     }
+                }
+                if (e.type == SDL_KEYUP)
+                {
+                    if (e.key.keysym.sym == SDLK_RETURN) // press Enter
+                    {
+                        hitBtnEvent(player, computers);
+                    }
+
+                    if (e.key.keysym.sym == SDLK_SPACE) // press Space
+                    {
+                        skipBtnEvent(player, computers);
+                    }
+
+                    if (e.key.keysym.sym >= SDLK_0 && e.key.keysym.sym <= SDLK_9) // 0 - 9 numbers
+                    {
+                        // The number key was pressed
+                        int index = e.key.keysym.sym - SDLK_0 - 1; // Get the numeric value
+
+                        player.changeSelected(index);
+
+                        renderSelectEvent(player, computers);
+                    }
+
+                    SDL_RenderPresent(gRenderer);
                 }
             }
 

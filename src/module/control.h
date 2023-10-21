@@ -1,62 +1,87 @@
-void skipBtnEvent(User &player, vector<Computer> &computers, int mouseX, int mouseY)
+SDL_Rect skipBtnArea = {210, 440, 135, 59};
+SDL_Rect hitBtnArea = {800, 440, 135, 59};
+SDL_Rect againBtnArea = {470, 300, 155, 50};
+
+void skipBtnEvent(User &player, vector<Computer> &computers)
 {
     if (!player.getIsFirst())
     {
-        SDL_Rect skipBtnArea = {210, 440, 135, 59};
-        if (mouseX >= skipBtnArea.x && mouseX <= skipBtnArea.x + skipBtnArea.w &&
-            mouseY >= skipBtnArea.y && mouseY <= skipBtnArea.y + skipBtnArea.h)
+        player.setUserTurn(false);
+        player.printSkipText();
+        player.setSkip(true);
+    }
+}
+
+void hitBtnEvent(User &player, vector<Computer> &computers)
+{
+    if (player.selectedCardsLen())
+    {
+
+        SDL_RenderClear(gRenderer);
+        SDL_RenderCopy(gRenderer, backgroundTexture, NULL, NULL);
+
+        player.hit();
+        if (player.checkWin())
+            player.setPlace();
+
+        if (!player.getIsFinish())
         {
-            player.setUserTurn(false);
+            renderHitBtn();
+            if (!player.getIsFirst())
+            {
+                renderSkipBtn();
+            }
+            player.printCards();
+        }
+        else
+        {
+            player.printWinner();
+        }
+
+        renderHistory(history);
+
+        if (player.getSkip())
+        {
             player.printSkipText();
-            player.setSkip(true);
+        }
+        // print skip text and back cards
+        for (Computer computer : computers)
+        {
+            computer.printBackCard();
+            if (computer.getSkip())
+            {
+                computer.printSkipText(computer.getId());
+            }
         }
     }
 }
 
-void hitBtnEvent(User &player, vector<Computer> &computers, int mouseX, int mouseY)
+// print others stuff
+void renderSelectEvent(User player, vector<Computer> computers)
 {
-    if (player.selectedCardsLen())
+    SDL_RenderClear(gRenderer);
+    SDL_RenderCopy(gRenderer, backgroundTexture, NULL, NULL);
+
+    if (!player.getIsFirst())
     {
-        SDL_Rect hitBtnArea = {800, 440, 135, 59};
-        if (mouseX >= hitBtnArea.x && mouseX <= hitBtnArea.x + hitBtnArea.w &&
-            mouseY >= hitBtnArea.y && mouseY <= hitBtnArea.y + hitBtnArea.h)
+        renderSkipBtn();
+    }
+    renderHitBtn();
+    renderHistory(history);
+
+    player.printCards();
+
+    if (player.getSkip())
+    {
+        player.printSkipText();
+    }
+
+    for (Computer computer : computers)
+    {
+        computer.printBackCard();
+        if (computer.getSkip())
         {
-            SDL_RenderClear(gRenderer);
-            SDL_RenderCopy(gRenderer, backgroundTexture, NULL, NULL);
-
-            player.hit();
-            if (player.checkWin())
-                player.setPlace();
-
-            if (!player.getIsFinish())
-            {
-                renderHitBtn();
-                if (!player.getIsFirst())
-                {
-                    renderSkipBtn();
-                }
-                player.printCards();
-            }
-            else
-            {
-                player.printWinner();
-            }
-
-            renderHistory(history);
-
-            if (player.getSkip())
-            {
-                player.printSkipText();
-            }
-            // print skip text and back cards
-            for (Computer computer : computers)
-            {
-                computer.printBackCard();
-                if (computer.getSkip())
-                {
-                    computer.printSkipText(computer.getId());
-                }
-            }
+            computer.printSkipText(computer.getId());
         }
     }
 }
@@ -94,31 +119,6 @@ void cardSelectEvent(User &player, vector<Computer> &computers, int mouseX, int 
         }
 
         player.changeSelected(index);
-
-        SDL_RenderClear(gRenderer);
-        SDL_RenderCopy(gRenderer, backgroundTexture, NULL, NULL);
-
-        if (!player.getIsFirst())
-        {
-            renderSkipBtn();
-        }
-        renderHitBtn();
-        renderHistory(history);
-
-        player.printCards();
-
-        if (player.getSkip())
-        {
-            player.printSkipText();
-        }
-        // print skip text and back cards
-        for (Computer computer : computers)
-        {
-            computer.printBackCard();
-            if (computer.getSkip())
-            {
-                computer.printSkipText(computer.getId());
-            }
-        }
+        renderSelectEvent(player, computers);
     }
 }
