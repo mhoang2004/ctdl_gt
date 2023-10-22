@@ -135,7 +135,7 @@ int main(int argc, char *args[])
         }
         else
         {
-            backTexture = loadTexture("src/cards/cards2/BACK.png");
+            backTexture = loadTexture("src/cards/cardtest/BACK.png");
             for (Computer computer : computers)
                 computer.printBackCard();
 
