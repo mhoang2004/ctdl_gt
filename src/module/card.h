@@ -32,8 +32,8 @@ public:
 	{
 		this->x = 0;
 		this->y = 560;
-		this->width = 120;
-		this->height = 174;
+		this->width = 132;
+		this->height = 192;
 
 		setDestinationRect();
 	}
@@ -77,9 +77,10 @@ public:
 	{
 		return ranks;
 	}
-	void setPath(string rank, int suit)
+	void setPath(string rank, int suit, string themeCard)
 	{
 		this->path = "src/cards/";
+		this->path += themeCard;
 		this->path += rank;
 		this->path += "-";
 
@@ -214,7 +215,7 @@ public:
 				card.setRanks(ranks[j]);
 				card.setSuits(suits[k]);
 				card.setValue(ranks[j]);
-				card.setPath(card.getRanks(), card.getSuits());
+				card.setPath(card.getRanks(), card.getSuits(), themeCard);
 				card.setTexture(loadTexture(card.getPath()));
 
 				playingCards.push_back(card);

@@ -45,6 +45,8 @@ void playAgain(PlayingCards &plCards, User &player, vector<Computer> &computers)
 
     srand(time(0));
 
+    themeCard = themesCard[rand() % THEME_NUM];
+
     plCards.createPlayingCards();
     plCards.shufflePlayingCards();
 
@@ -106,6 +108,9 @@ int main(int argc, char *args[])
         // set a seed
         srand(time(0));
 
+        // theme of the game
+        themeCard = themesCard[rand() % THEME_NUM];
+
         // init shuffle deck
         PlayingCards plCards;
 
@@ -135,7 +140,8 @@ int main(int argc, char *args[])
         }
         else
         {
-            backTexture = loadTexture("src/cards/BACK.png");
+            string backPath = "src/cards/" + themeCard + "BACK.png";
+            backTexture = loadTexture(backPath);
             for (Computer computer : computers)
                 computer.printBackCard();
 
