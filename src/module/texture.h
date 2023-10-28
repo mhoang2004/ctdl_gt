@@ -38,7 +38,7 @@ void loadBackground()
     // tao bo dem backgroundTexture de luu tru background (SDL_PIXELFORMAT_RGBA8888 định dạng pixel cho texture, SDL_TEXTUREACCESS_TARGET vẽ lên texture, SDL_TEXTUREACCESS_)
     backgroundTexture = SDL_CreateTexture(gRenderer, SDL_PIXELFORMAT_RGBA8888, SDL_TEXTUREACCESS_TARGET, SCREEN_WIDTH, SCREEN_HEIGHT);
 
-    SDL_Surface *backgroundSurface = IMG_Load("src/image/OIP.png"); // Thay bằng đường dẫn đến hình ảnh của bạn
+    SDL_Surface *backgroundSurface = IMG_Load("src/image/OIP1.png"); // Thay bằng đường dẫn đến hình ảnh của bạn
     if (backgroundSurface == nullptr)
     {
         printf("Failed to load image! SDL_image Error: %s\n", IMG_GetError());
