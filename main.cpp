@@ -259,7 +259,7 @@ int main(int argc, char *args[])
 
                             doneTurn(player, computers);
                             // rand() % 2 (if computers[i] CAN hit?)
-                            if ((check_computer(computers[i], history.back())) && !computers[i].getIsFirst())
+                            if (rand() % 2 && !computers[i].getIsFirst())
                             {
                                 computers[i].setUserTurn(false);
                                 computers[i].printSkipText(computers[i].getId());
