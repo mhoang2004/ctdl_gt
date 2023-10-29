@@ -258,8 +258,17 @@ int main(int argc, char *args[])
                             SDL_Delay(500);
 
                             doneTurn(player, computers);
+                            bool check_com = true;
                             // rand() % 2 (if computers[i] CAN hit?)
-                            if (rand() % 2 && !computers[i].getIsFirst())
+                            if ((int)history.size() == 0)
+                            {
+                                check_com = false;
+                            }
+                            else
+                            {
+                                check_com = check_computer(computers[i].getUserCards(), history[(int)history.size() - 1]);
+                            }
+                            if (check_com && !computers[i].getIsFirst())
                             {
                                 computers[i].setUserTurn(false);
                                 computers[i].printSkipText(computers[i].getId());

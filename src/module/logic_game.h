@@ -3,11 +3,15 @@
 #include <algorithm>
 #include "card.h"
 #include "user.h"
-// #include "algorithms.h"
+#include "algorithms.h"
 using namespace std;
 // Tra ve gia tri dung la skip, con false la danh
 bool check_computer(vector<Card> computer, vector<Card> history)
 {
+    if ((int)history.size() == 0)
+    {
+        return false;
+    }
     if ((int)computer.size() < (int)history.size())
     {
         return true;
@@ -64,10 +68,37 @@ bool check_computer(vector<Card> computer, vector<Card> history)
     }
     else
     {
+        // Đánh dấu lá bài của máy với lá bài trên bàn
+        map<int, int> mp, mp1;
+        for (auto it : computer)
+        {
+            mp[it.getValue()]++;
+        }
+        int index = 0;
+        for (auto it : history)
+        {
+            index = it.getValue();
+            mp1[it.getValue()]++;
+        }
+        // Nếu có sáp hoặc tú quý của máy có không
+        if (mp1[index] == 3 || mp1[index] == 4)
+        {
+            for (int i = index + 1; i <= 15; i++)
+            {
+                // Có thể là dấu lớn nma tao tiếc vụ máy có tứ quý mà đánh sáp(3 lá giống nhau)
+                if (mp[i] == mp1[index])
+                {
+                    return false;
+                }
+            }
+            return true;
+        }
+
         int temp1 = (int)history.size(), temp2 = (int)computer.size();
         // Kiem tra tam cuoi cua la truoc
         Card the_last_history = history[temp1 - 1];
         Card the_first_history = history[0];
+        // Nếu lá cuối sảnh là lá át cơ thì không đánh
         if (the_last_history.getValue() == 14 && the_last_history.getSuits() == 3)
         {
             return true;
@@ -75,18 +106,23 @@ bool check_computer(vector<Card> computer, vector<Card> history)
         else
         {
             // Xu ly sanh
-            // Xu ly cap doi, neu co coi thi doi cho la doi voi la le
+            // 3 4 4 5 6 7
+            // Xử lý cặp đôi thành 3 4 5 6 7 4
             for (int i = 1; i < temp2 - 1; i++)
             {
+                // Duyệt tới lá già là dừng tránh bị tràn mảng
                 if (computer[i].getValue() >= 13)
                 {
                     break;
                 }
                 if (computer[i].getValue() == computer[i - 1].getValue())
                 {
-                    Card swap_teamp = computer[i];
-                    computer[i] = computer[i + 1];
-                    computer[i + 1] = swap_teamp;
+                    for (int j = i + 1; j < temp2 - 1; j++)
+                    {
+                        Card swap_teamp = computer[i];
+                        computer[i] = computer[j];
+                        computer[j] = swap_teamp;
+                    }
                 }
             }
             int count = 0, ans = -1, val = -1;
