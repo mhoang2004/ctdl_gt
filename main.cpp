@@ -276,9 +276,25 @@ int main(int argc, char *args[])
                             }
                             else
                             {
+                                if (computers[i].getIsFirst())
+                                {
+                                    for (int j = 0; j < computers[i].getFirstCards(); j++)
+                                    {
+                                        computers[i].changeSelected(j);
+                                    }
+                                    computers[i].setIsFirst(false);
+                                }
                                 // what cards computers[i] will hit
-                                computers[i].changeSelected(0);
-
+                                else
+                                {
+                                    vector<int> card_will_hit = cards_will_Hit_1(computers[i].getUserCards(), history[(int)history.size() - 1]);
+                                    cout << "Chi so cua la bai " << endl;
+                                    for (int k = 0; k < (int)card_will_hit.size(); k++)
+                                    {
+                                        cout << card_will_hit[k] << endl;
+                                        computers[i].changeSelected(card_will_hit[k]);
+                                    }
+                                }
                                 computers[i].hit();
                                 if (computers[i].checkWin())
                                 {

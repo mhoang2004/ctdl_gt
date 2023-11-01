@@ -40,7 +40,7 @@ public:
             Card lastCard = plCards.get1Card();
             this->userCards.push_back(lastCard);
         }
-
+        mergeSort(userCards, 0, 12);
         this->isFinish = false;
         this->isSkip = false;
 
@@ -291,10 +291,10 @@ public:
         int selectedCardLen = selectedCards.size();
 
         // check is valid cards?
-        if (!check(selectedCardLen))
-        {
-            return;
-        }
+        // if (!check(selectedCardLen))
+        // {
+        //     return;
+        // }
 
         // change turn (if not user's turn)
         isTurn = false;
@@ -512,6 +512,7 @@ public:
     Computer(int id, PlayingCards &plCards) : User(plCards)
     {
         this->id = id;
+        this->sortCard();
         this->setWinTexture(id);
     }
 
@@ -519,7 +520,29 @@ public:
     {
         return this->id;
     }
-
+    int getFirstCards()
+    {
+        map<int, int> saveCards = getSaveCards();
+        int value[13];
+        int i = 0;
+        for (auto it : saveCards)
+        {
+            if (it.second == 1)
+            {
+                value[i] = it.first;
+                i++;
+            }
+        }
+        if (saveCards[3] == 1)
+        {
+            while (!checkSequence(value, i) && i > 2)
+                i--;
+        }
+        if (i > 2 && saveCards[3] == 1)
+            return i;
+        else
+            return saveCards[3];
+    }
     void printBackCard()
     {
         if (!getIsFinish())
