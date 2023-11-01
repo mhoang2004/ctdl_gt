@@ -15,11 +15,25 @@ vector<int> cards_will_Hit_1(vector<Card> computer, vector<Card> history)
     {
         mp[it.getValue()]++;
     }
-    int index = 0;
+    int index = 0; // Biến này dùng để lấy giá trị của 3 lá cùng giá trị hoặc 4 lá cùng giá trị
     for (auto it : history)
     {
         index = it.getValue();
         mp1[it.getValue()]++;
+    }
+    if (mp1[15] == 1 || mp1[15] == 2)
+    {
+        for (int i = 0; i < computer.size(); i++)
+        {
+            if (mp[computer[i].getValue()] == 4)
+            {
+                temp1.push_back(i);
+                temp1.push_back(i + 1);
+                temp1.push_back(i + 2);
+                temp1.push_back(i + 3);
+                return temp1;
+            }
+        }
     }
     if ((int)history.size() == 1)
     {
@@ -42,21 +56,8 @@ vector<int> cards_will_Hit_1(vector<Card> computer, vector<Card> history)
         bool ok = true;
         int suit_his1 = history[0].getSuits();
         int suit_his2 = history[1].getSuits();
-        // Chua xu ly chat heo
-        // Xu ly neu co doi bang gia tri
-        // cout << " 2" << endl;
-        // for (int i = 0; i < temp; i++)
-        // {
-        //     if ((mp[computer[i].getValue()] == 2) && (computer[i].getValue() > history[0].getValue()))
-        //     {
-        //         temp1.push_back(i);
-        //         temp1.push_back(i + 1);
-        //         return temp1;
-        //     }
-        // }
         for (int i = 0; i < temp; i++)
         {
-            cout << "Check doi bang nhau nhung khac chat" << endl;
             if ((mp[computer[i].getValue()] == 2) && (computer[i].getValue() == history[0].getValue()))
             {
                 if (suit_his1 != 3 && suit_his2 != 3)
@@ -89,9 +90,11 @@ vector<int> cards_will_Hit_1(vector<Card> computer, vector<Card> history)
                         if (computer[i].getValue() == index)
                         {
                             temp1.push_back(i);
+                            temp1.push_back(i + 1);
+                            temp1.push_back(i + 2);
+                            return temp1;
                         }
                     }
-                    return temp1;
                 }
             }
         }
@@ -106,19 +109,6 @@ vector<int> cards_will_Hit_1(vector<Card> computer, vector<Card> history)
                 v.push_back({computer[i].getValue(), i});
             }
         }
-
-        cout << "Vector v. first luc danh " << endl;
-        for (auto it = v.begin(); it != v.end(); it++)
-        {
-            cout << (*it).first << ' ';
-        }
-        cout << endl;
-        cout << "Vector v. second luc danh " << endl;
-        for (auto it = v.begin(); it != v.end(); it++)
-        {
-            cout << (*it).second << ' ';
-        }
-        cout << endl;
         // Dùng sliding window
         int a[16];
         int k = (int)history.size();
@@ -138,17 +128,11 @@ vector<int> cards_will_Hit_1(vector<Card> computer, vector<Card> history)
         {
             return temp1;
         }
-        cout << "Hello khuc test 0" << endl;
         for (int i = k; i < (int)v.size(); i++)
         {
             temp1.erase(temp1.begin());
             a[i] = (*it).first;
             temp1.push_back((*it).second);
-            cout << "Vong thu " << i << endl;
-            for (auto ao = temp1.begin(); ao != temp1.end(); ao++)
-            {
-                cout << *ao << ' ';
-            }
             if (a[i - k + 1] > history[0].getValue() && a[i] - a[i - k + 1] + 1 == k)
             {
 
@@ -164,24 +148,28 @@ vector<int> cards_will_Hit_1(vector<Card> computer, vector<Card> history)
     }
 }
 
-// Tra ve gia tri dung la skip, con false la danh
+// Trả về giá trị true là không đánh, trả về giá trị false là đánh
 bool check_computer(vector<Card> computer, vector<Card> history)
 {
+    // Số lá bài trên tay ít hơn số lá bài trên bàn thì không đánh
     if ((int)computer.size() < (int)history.size())
     {
         return true;
     }
-    int temp = computer.size();
-    mergeSort(computer, 0, temp - 1);
-    // Xu ly coc
+    // Sắp xếp lại lá bài trước khi check
+    mergeSort(computer, 0, (int)computer.size() - 1);
+    // Xử lý cóc
     if ((int)history.size() == 1)
     {
-        for (int i = 0; i < temp; ++i)
+        // So sánh giá trị của bài trên bàn với bài trên tay
+        for (int i = 0; i < (int)computer.size(); ++i)
         {
+            // Nếu lá bài thứ i của máy lớn trên bài thì cho đánh
             if (computer[i].getValue() > history[0].getValue())
             {
                 return false;
             }
+            // Nếu bằng nhau thì xét chất cơ rô chuồn bích (cơ =3)
             else if ((computer[i].getValue() == history[0].getValue()) && (computer[i].getSuits() < history[0].getSuits()))
             {
                 return false;
@@ -192,18 +180,28 @@ bool check_computer(vector<Card> computer, vector<Card> history)
     // Xu ly doi
     else if ((int)history.size() == 2)
     {
-        int suit_his1 = history[0].getSuits();
-        int suit_his2 = history[1].getSuits();
+        // Đánh dấu lá bài trên tay
         map<int, int> mp;
+        // Biến check có tứ quý không
+        bool check_Qua = false;
         for (auto it : computer)
         {
             mp[it.getValue()]++;
+            if (mp[it.getValue()] == 4)
+            {
+                check_Qua = true;
+            }
         }
-        // Chua xu ly chat heo
-        // Xu ly neu co doi bang gia tri
+        // Xử lý chặt heo
+        if (check_Qua)
+        {
+            return false;
+        }
+
+        // Xử lý đôi có cùng giá trị
         if (mp[history[0].getValue()] == 2)
         {
-            if (suit_his1 != 3 && suit_his2 != 3)
+            if (history[0].getSuits() != 3 && history[1].getSuits() != 3)
             {
                 return false;
             }
@@ -219,12 +217,6 @@ bool check_computer(vector<Card> computer, vector<Card> history)
     }
     else
     {
-        cout << "May chua sort" << endl;
-        for (int i = 0; i < computer.size(); i++)
-        {
-            cout << computer[i].getValue() << ' ';
-        }
-        cout << endl;
         // Đánh dấu lá bài của máy với lá bài trên bàn
         map<int, int> mp, mp1;
         for (auto it : computer)
@@ -240,13 +232,9 @@ bool check_computer(vector<Card> computer, vector<Card> history)
         // Nếu có sáp hoặc tú quý của máy có không
         if (mp1[index] == 3 || mp1[index] == 4)
         {
-            for (int i = index + 1; i <= 15; i++)
+            if (mp[index] == mp1[index])
             {
-                // Có thể là dấu lớn nma tao tiếc vụ máy có tứ quý mà đánh sáp(3 lá giống nhau)
-                if (mp[i] == mp1[index])
-                {
-                    return false;
-                }
+                return false;
             }
             return true;
         }
@@ -271,13 +259,6 @@ bool check_computer(vector<Card> computer, vector<Card> history)
                     v.push_back({computer[i].getValue(), i});
                 }
             }
-
-            cout << "Vector v " << endl;
-            for (auto it = v.begin(); it != v.end(); it++)
-            {
-                cout << (*it).first << ' ';
-            }
-            cout << endl;
             int count = 0;
             // Dùng sliding window
             int a[16];
@@ -291,12 +272,6 @@ bool check_computer(vector<Card> computer, vector<Card> history)
             }
             if (a[0] > history[0].getValue() && a[k - 1] - a[0] + 1 == k)
             {
-                cout << "Silding window lan dau" << endl;
-                for (int o = 0; o <= k - 1; o++)
-                {
-                    cout << a[o] << ' ';
-                }
-                cout << endl;
                 return false;
             }
             else if (a[0] == history[0].getValue() && computer[(*(it--)).second].getSuits() < history[0].getSuits() && a[k - 1] - a[0] + 1 == k)
@@ -307,19 +282,12 @@ bool check_computer(vector<Card> computer, vector<Card> history)
             {
 
                 a[i] = (*it).first;
-                cout << "Siliding window lan thu " << i << "so dau va so cuoi " << a[i] << ' ' << a[i - k + 1] << endl;
                 if (a[i] == 15)
                 {
                     return true;
                 }
                 if (a[i - k + 1] > history[0].getValue() && a[i] - a[i - k + 1] + 1 == k)
                 {
-                    cout << "Silding window" << endl;
-                    for (int o = i - k + 1; o <= i; o++)
-                    {
-                        cout << a[o] << ' ';
-                    }
-                    cout << endl;
                     return false;
                 }
                 else if ((a[i - k + 1] == history[0].getValue()) && (computer[(*it).second].getSuits() < history[0].getSuits()) && (a[i] - a[i - k + 1] + 1 == k))

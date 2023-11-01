@@ -291,10 +291,10 @@ public:
         int selectedCardLen = selectedCards.size();
 
         // check is valid cards?
-        // if (!check(selectedCardLen))
-        // {
-        //     return;
-        // }
+        if (!check(selectedCardLen))
+        {
+            return;
+        }
 
         // change turn (if not user's turn)
         isTurn = false;

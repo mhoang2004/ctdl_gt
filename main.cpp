@@ -288,10 +288,8 @@ int main(int argc, char *args[])
                                 else
                                 {
                                     vector<int> card_will_hit = cards_will_Hit_1(computers[i].getUserCards(), history[(int)history.size() - 1]);
-                                    cout << "Chi so cua la bai " << endl;
                                     for (int k = 0; k < (int)card_will_hit.size(); k++)
                                     {
-                                        cout << card_will_hit[k] << endl;
                                         computers[i].changeSelected(card_will_hit[k]);
                                     }
                                 }
