@@ -48,10 +48,10 @@ void renderHistory(vector<vector<Card>> history)
     }
 }
 
-void renderPassWin(SDL_Texture *winTexture)
+void renderPassWin(SDL_Texture *winTexture, int padding = 0)
 {
     SDL_Delay(1000);
     SDL_Rect destinationRect;
-    destinationRect = {SCREEN_WIDTH / 2 - 280, SCREEN_HEIGHT / 2 - 280, 250, 250};
+    destinationRect = {SCREEN_WIDTH / 2 - 280 + (210 * (padding + 1)), SCREEN_HEIGHT / 2 - 280, 200, 200};
     SDL_RenderCopy(gRenderer, winTexture, NULL, &destinationRect);
 }

@@ -98,6 +98,7 @@ vector<int> cards_will_Hit_1(vector<Card> computer, vector<Card> history)
                 }
             }
         }
+
         vector<pair<int, int>> v;
         // Xu ly sanh
         v.push_back({computer[0].getValue(), 0});
@@ -105,17 +106,16 @@ vector<int> cards_will_Hit_1(vector<Card> computer, vector<Card> history)
         {
             if (computer[i].getValue() != computer[i - 1].getValue())
             {
-
                 v.push_back({computer[i].getValue(), i});
             }
         }
+
         // Dùng sliding window
         int a[16];
         int k = (int)history.size();
         auto it = v.begin();
         for (int i = 0; i < k; i++)
         {
-
             a[i] = (*it).first;
             temp1.push_back((*it).second);
             it++;
@@ -135,7 +135,6 @@ vector<int> cards_will_Hit_1(vector<Card> computer, vector<Card> history)
             temp1.push_back((*it).second);
             if (a[i - k + 1] > history[0].getValue() && a[i] - a[i - k + 1] + 1 == k)
             {
-
                 return temp1;
             }
             else if ((a[i - k + 1] == history[0].getValue()) && (computer[(*it).second].getSuits() < history[0].getSuits()) && (a[i] - a[i - k + 1] + 1 == k))
@@ -158,6 +157,7 @@ bool check_computer(vector<Card> computer, vector<Card> history)
     }
     // Sắp xếp lại lá bài trước khi check
     mergeSort(computer, 0, (int)computer.size() - 1);
+
     // Xử lý cóc
     if ((int)history.size() == 1)
     {
@@ -250,6 +250,7 @@ bool check_computer(vector<Card> computer, vector<Card> history)
         else
         {
             vector<pair<int, int>> v;
+
             // Xu ly sanh
             v.push_back({computer[0].getValue(), 0});
             for (int i = 1; i < temp2; i++)
@@ -260,6 +261,7 @@ bool check_computer(vector<Card> computer, vector<Card> history)
                 }
             }
             int count = 0;
+
             // Dùng sliding window
             int a[16];
             int k = (int)history.size();

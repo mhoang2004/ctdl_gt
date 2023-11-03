@@ -24,11 +24,11 @@ bool checkWinByDefault(User player, vector<Computer> computers)
         renderPassWin(player.getWinTexture());
         winByDefault = true;
     }
-    for (Computer computer : computers)
+    for (int i = 0; i < COMPUTER_NUM; i++)
     {
-        if (computer.isSpecialCards())
+        if (computers[i].isSpecialCards())
         {
-            renderPassWin(computer.getWinTexture());
+            renderPassWin(computers[i].getWinTexture(), i + 1);
             winByDefault = true;
         }
     }
@@ -133,9 +133,7 @@ int main(int argc, char *args[])
             SDL_RenderPresent(gRenderer);
             SDL_Delay(2000);
 
-            SDL_RenderClear(gRenderer);
-            SDL_RenderCopy(gRenderer, backgroundTexture, NULL, NULL);
-
+            quit = true;
             playAgain(plCards, player, computers);
         }
         else
@@ -186,8 +184,6 @@ int main(int argc, char *args[])
                     // handle events
                     if (!player.getIsFinish())
                     {
-                        // doneTurn(player, computers);
-
                         // event handler
                         cardSelectEvent(player, computers, mouseX, mouseY);
 
@@ -259,22 +255,17 @@ int main(int argc, char *args[])
 
                             doneTurn(player, computers);
                             bool check_com = true;
+
                             // rand() % 2 (if computers[i] CAN hit?)
+
                             if ((int)history.size() == 0)
-                            {
                                 check_com = false;
-                            }
                             else
                             {
                                 check_com = check_computer(computers[i].getUserCards(), history[(int)history.size() - 1]);
                             }
-                            if (check_com && !computers[i].getIsFirst())
-                            {
-                                computers[i].setUserTurn(false);
-                                computers[i].printSkipText(computers[i].getId());
-                                computers[i].setSkip(true);
-                            }
-                            else
+
+                            if (!check_com || computers[i].getIsFirst())
                             {
                                 if (computers[i].getIsFirst())
                                 {
@@ -284,8 +275,7 @@ int main(int argc, char *args[])
                                     }
                                     computers[i].setIsFirst(false);
                                 }
-                                // what cards computers[i] will hit
-                                else
+                                else // what cards computers[i] will hit
                                 {
                                     vector<int> card_will_hit = cards_will_Hit_1(computers[i].getUserCards(), history[(int)history.size() - 1]);
                                     for (int k = 0; k < (int)card_will_hit.size(); k++)
@@ -293,7 +283,9 @@ int main(int argc, char *args[])
                                         computers[i].changeSelected(card_will_hit[k]);
                                     }
                                 }
+
                                 computers[i].hit();
+
                                 if (computers[i].checkWin())
                                 {
                                     computers[i].setPlace();
@@ -309,7 +301,7 @@ int main(int argc, char *args[])
                                 SDL_RenderClear(gRenderer);
                                 SDL_RenderCopy(gRenderer, backgroundTexture, NULL, NULL);
 
-                                // render computer card
+                                // render computer cards
                                 for (Computer computer : computers)
                                 {
                                     if (!computer.getIsFinish())
@@ -348,6 +340,12 @@ int main(int argc, char *args[])
                                 {
                                     player.printWinner();
                                 }
+                            }
+                            else
+                            {
+                                computers[i].setUserTurn(false);
+                                computers[i].printSkipText(computers[i].getId());
+                                computers[i].setSkip(true);
                             }
 
                             SDL_RenderPresent(gRenderer);

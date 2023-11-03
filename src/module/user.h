@@ -10,9 +10,10 @@ vector<int> gameResult;
 
 class User
 {
-private:
+protected:
     vector<Card> userCards;
 
+private:
     // index of selected cards
     vector<int> selectedCards;
 
@@ -35,6 +36,7 @@ public:
 
     void initUser(PlayingCards &plCards)
     {
+        userCards.clear();
         for (int i = 0; i < 13; i++)
         {
             Card lastCard = plCards.get1Card();
@@ -522,9 +524,11 @@ public:
     }
     int getFirstCards()
     {
+        // key: value, value: quantiti
         map<int, int> saveCards = getSaveCards();
         int value[13];
         int i = 0;
+
         for (auto it : saveCards)
         {
             if (it.second == 1)
@@ -533,16 +537,20 @@ public:
                 i++;
             }
         }
-        if (saveCards[3] == 1)
+
+        int minCardValue = userCards[0].getValue();
+
+        if (saveCards[minCardValue] == 1)
         {
             while (!checkSequence(value, i) && i > 2)
                 i--;
         }
-        if (i > 2 && saveCards[3] == 1)
+        if (i > 2 && saveCards[minCardValue] == 1)
             return i;
         else
-            return saveCards[3];
+            return saveCards[minCardValue];
     }
+
     void printBackCard()
     {
         if (!getIsFinish())

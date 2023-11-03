@@ -59,6 +59,7 @@ void hitBtnEvent(User &player, vector<Computer> &computers)
 // print others stuff
 void renderSelectEvent(User player, vector<Computer> computers)
 {
+
     SDL_RenderClear(gRenderer);
     SDL_RenderCopy(gRenderer, backgroundTexture, NULL, NULL);
 
@@ -78,7 +79,15 @@ void renderSelectEvent(User player, vector<Computer> computers)
 
     for (Computer computer : computers)
     {
-        computer.printBackCard();
+        if (!computer.getIsFinish())
+        {
+            computer.printBackCard();
+        }
+        else
+        {
+            computer.printWinner();
+        }
+
         if (computer.getSkip())
         {
             computer.printSkipText(computer.getId());
