@@ -63,7 +63,6 @@ void playAgain(PlayingCards &plCards, User &player, vector<Computer> &computers)
     {
         SDL_RenderPresent(gRenderer);
         SDL_Delay(2000);
-
         playAgain(plCards, player, computers);
     }
     else
@@ -136,30 +135,28 @@ int main(int argc, char *args[])
             quit = true;
             playAgain(plCards, player, computers);
         }
-        else
+
+        string backPath = "src/cards/" + themeCard + "BACK.png";
+        backTexture = loadTexture(backPath);
+        for (Computer computer : computers)
+            computer.printBackCard();
+
+        hitBtnTexture = loadTexture("src/image/play.png");
+        skipBtnTexture = loadTexture("src/image/skip.png");
+        againBtnTexture = loadTexture("src/image/again.png");
+
+        renderHitBtn();
+        if (!player.getIsFirst())
         {
-            string backPath = "src/cards/" + themeCard + "BACK.png";
-            backTexture = loadTexture(backPath);
-            for (Computer computer : computers)
-                computer.printBackCard();
+            renderSkipBtn();
+        }
+        player.printCards();
 
-            hitBtnTexture = loadTexture("src/image/play.png");
-            skipBtnTexture = loadTexture("src/image/skip.png");
-            againBtnTexture = loadTexture("src/image/again.png");
+        SDL_RenderPresent(gRenderer);
 
-            renderHitBtn();
-            if (!player.getIsFirst())
-            {
-                renderSkipBtn();
-            }
-            player.printCards();
-
-            SDL_RenderPresent(gRenderer);
-
-            if (player.isUserTurn())
-            {
-                computers[0].setUserTurn(true);
-            }
+        if (player.isUserTurn())
+        {
+            computers[0].setUserTurn(true);
         }
 
         // check if finished A GAME
@@ -196,7 +193,6 @@ int main(int argc, char *args[])
                         if (mouseX >= hitBtnArea.x && mouseX <= hitBtnArea.x + hitBtnArea.w &&
                             mouseY >= hitBtnArea.y && mouseY <= hitBtnArea.y + hitBtnArea.h)
                         {
-
                             hitBtnEvent(player, computers);
                         }
 
@@ -310,7 +306,7 @@ int main(int argc, char *args[])
                                     }
                                     else
                                     {
-                                        computer.printWinner();
+                                        computer.printWinner(computer.getId());
                                     }
 
                                     if (computer.getSkip())
@@ -401,7 +397,7 @@ int main(int argc, char *args[])
 
                 for (Computer computer : computers)
                 {
-                    computer.printWinner();
+                    computer.printWinner(computer.getId());
                 }
                 player.printWinner();
 

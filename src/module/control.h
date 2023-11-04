@@ -47,7 +47,15 @@ void hitBtnEvent(User &player, vector<Computer> &computers)
         // print skip text and back cards
         for (Computer computer : computers)
         {
-            computer.printBackCard();
+            if (!computer.getIsFinish())
+            {
+                computer.printBackCard();
+            }
+            else
+            {
+                computer.printWinner(computer.getId());
+            }
+
             if (computer.getSkip())
             {
                 computer.printSkipText(computer.getId());
@@ -85,7 +93,7 @@ void renderSelectEvent(User player, vector<Computer> computers)
         }
         else
         {
-            computer.printWinner();
+            computer.printWinner(computer.getId());
         }
 
         if (computer.getSkip())
@@ -112,7 +120,7 @@ void cardSelectEvent(User &player, vector<Computer> &computers, int mouseX, int 
         {
             maxValue = minValue + 80;
 
-            if (minValue < mouseX && maxValue > mouseX)
+            if (minValue <= mouseX && maxValue >= mouseX)
             {
                 index = i;
                 break;

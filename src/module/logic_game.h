@@ -349,7 +349,14 @@ void doneTurn(User &player, vector<Computer> &computers)
 
         if (player.isUserTurn())
         {
-            computers[0].setUserTurn(true);
+            for (int i = 0; i < COMPUTER_NUM; i++)
+            {
+                if (!computers[i].getIsFinish())
+                {
+                    computers[i].setUserTurn(true);
+                    break;
+                }
+            }
         }
 
         SDL_RenderClear(gRenderer);
@@ -387,7 +394,7 @@ void doneTurn(User &player, vector<Computer> &computers)
         {
             if (computer.getIsFinish())
             {
-                computer.printWinner();
+                computer.printWinner(computer.getId());
             }
             computer.printBackCard();
 
