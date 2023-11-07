@@ -460,7 +460,7 @@ public:
             {
                 if (x.second == 4)
                 {
-                    if (x.first == 2)
+                    if (x.first == 15)
                     {
                         countJack = 1;
                         break;
@@ -486,7 +486,7 @@ public:
             }
             else // Have five consecutive pairs
             {
-                int fleg = 1;
+                int flag = 1;
                 int prevKey = -1;
                 for (pair<int, int> x : saveCards)
                 {
@@ -494,13 +494,13 @@ public:
                     {
                         if (prevKey != -1 && x.first != prevKey + 1)
                         {
-                            fleg = -1;
+                            flag = -1;
                             break;
                         }
                         prevKey = x.first;
                     }
                 }
-                if (fleg == 1)
+                if (flag == 1)
                 {
                     this->isSpecial = true;
                 }
