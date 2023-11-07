@@ -70,6 +70,7 @@
         "typeinfo": "cpp",
         "valarray": "cpp",
         "xmemory": "cpp",
-        "xutility": "cpp"
+        "xutility": "cpp",
+        "xstring": "cpp"
     }
 }

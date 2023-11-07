@@ -460,7 +460,7 @@ public:
             {
                 if (x.second == 4)
                 {
-                    if (x.first == 2)
+                    if (x.first == 15)
                     {
                         countJack = 1;
                         break;

@@ -253,31 +253,50 @@ int main(int argc, char *args[])
                             bool check_com = true;
 
                             // rand() % 2 (if computers[i] CAN hit?)
-
+                            cout << "May thu  " << i << endl;
+                            cout << "Bai cua may thu " << i << endl;
+                            for (int k = 0; k < (int)computers[i].getUserCards().size(); k++)
+                            {
+                                cout << computers[i].getUserCards()[k].getValue() << ' ';
+                            }
+                            cout << endl;
                             if ((int)history.size() == 0)
                                 check_com = false;
                             else
                             {
-                                check_com = check_computer(computers[i].getUserCards(), history[(int)history.size() - 1]);
+                                // check_com = check_computer(computers[i].getUserCards(), history[(int)history.size() - 1]);
+                                check_com = checkComputerCanHit(computers[i].getUserCards(), history[(int)history.size() - 1]);
                             }
 
                             if (!check_com || computers[i].getIsFirst())
                             {
+                                cout << "La computer thu " << i << " danh " << endl;
                                 if (computers[i].getIsFirst())
                                 {
                                     for (int j = 0; j < computers[i].getFirstCards(); j++)
                                     {
                                         computers[i].changeSelected(j);
+                                        cout << computers[i].getUserCards()[j].getValue() << ' ';
                                     }
+                                    cout << endl;
                                     computers[i].setIsFirst(false);
                                 }
                                 else // what cards computers[i] will hit
                                 {
-                                    vector<int> card_will_hit = cards_will_Hit_1(computers[i].getUserCards(), history[(int)history.size() - 1]);
-                                    for (int k = 0; k < (int)card_will_hit.size(); k++)
+                                    // vector<int> card_will_hit = cards_will_Hit_1(computers[i].getUserCards(), history[(int)history.size() - 1]);
+                                    // for (int k = 0; k < (int)card_will_hit.size(); k++)
+                                    // {
+                                    //     computers[i].changeSelected(card_will_hit[k]);
+                                    //     cout << computers[i].getUserCards()[card_will_hit[k]].getValue() << ' ';
+                                    // }
+                                    // cout << endl;
+                                    vector<int> cardWillHit = cardsWillHit2(computers[i].getUserCards(), history[(int)history.size() - 1]);
+                                    for (int k = 0; k < (int)cardWillHit.size(); k++)
                                     {
-                                        computers[i].changeSelected(card_will_hit[k]);
+                                        computers[i].changeSelected(cardWillHit[k]);
+                                        cout << computers[i].getUserCards()[cardWillHit[k]].getValue() << ' ';
                                     }
+                                    cout << endl;
                                 }
 
                                 computers[i].hit();
