@@ -6,6 +6,15 @@
 
 using namespace std;
 
+/*
+play again
+money
+turn if a computer win
+valid hit
+
+
+*/
+
 #include "src/module/global.h"
 #include "src/module/init.h"
 #include "src/module/close.h"
@@ -55,6 +64,7 @@ void playAgain(PlayingCards &plCards, User &player, vector<Computer> &computers)
     for (Computer &computer : computers)
     {
         computer.initUser(plCards);
+        computer.resetSkipCount();
     }
 
     bool winByDefault = checkWinByDefault(player, computers);
@@ -125,42 +135,41 @@ int main(int argc, char *args[])
             computers.push_back(temp);
         }
 
+        string backPath = "src/cards/" + themeCard + "BACK.png";
+        backTexture = loadTexture(backPath);
+        hitBtnTexture = loadTexture("src/image/play.png");
+        skipBtnTexture = loadTexture("src/image/skip.png");
+        againBtnTexture = loadTexture("src/image/again.png");
+
+        // check if finished A GAME
+        bool isGameFinish = false;
         bool winByDefault = checkWinByDefault(player, computers);
 
         if (winByDefault)
         {
             SDL_RenderPresent(gRenderer);
             SDL_Delay(2000);
-
-            quit = true;
             playAgain(plCards, player, computers);
         }
-
-        string backPath = "src/cards/" + themeCard + "BACK.png";
-        backTexture = loadTexture(backPath);
-        for (Computer computer : computers)
-            computer.printBackCard();
-
-        hitBtnTexture = loadTexture("src/image/play.png");
-        skipBtnTexture = loadTexture("src/image/skip.png");
-        againBtnTexture = loadTexture("src/image/again.png");
-
-        renderHitBtn();
-        if (!player.getIsFirst())
+        else
         {
-            renderSkipBtn();
+            for (Computer computer : computers)
+                computer.printBackCard();
+
+            renderHitBtn();
+            if (!player.getIsFirst())
+            {
+                renderSkipBtn();
+            }
+            player.printCards();
+
+            SDL_RenderPresent(gRenderer);
+
+            if (player.isUserTurn())
+            {
+                computers[0].setUserTurn(true);
+            }
         }
-        player.printCards();
-
-        SDL_RenderPresent(gRenderer);
-
-        if (player.isUserTurn())
-        {
-            computers[0].setUserTurn(true);
-        }
-
-        // check if finished A GAME
-        bool isGameFinish = false;
 
         // game loop
         while (!quit)
@@ -179,7 +188,7 @@ int main(int argc, char *args[])
                     SDL_GetMouseState(&mouseX, &mouseY);
 
                     // handle events
-                    if (!player.getIsFinish())
+                    if (!player.getIsFinish() && !isGameFinish)
                     {
                         // event handler
                         cardSelectEvent(player, computers, mouseX, mouseY);
@@ -317,6 +326,18 @@ int main(int argc, char *args[])
                                 SDL_RenderClear(gRenderer);
                                 SDL_RenderCopy(gRenderer, backgroundTexture, NULL, NULL);
 
+                                if (gameResult.size() == 3)
+                                {
+                                    for (Computer &computer : computers)
+                                    {
+                                        if (!computer.getIsFinish())
+                                        {
+                                            computer.checkWin();
+                                            computer.setPlace();
+                                        }
+                                    }
+                                }
+
                                 // render computer cards
                                 for (Computer computer : computers)
                                 {
@@ -361,7 +382,7 @@ int main(int argc, char *args[])
                             {
                                 computers[i].setUserTurn(false);
                                 computers[i].printSkipText(computers[i].getId());
-                                computers[i].setSkipCount();
+                                computers[i].increaseSkipCount();
                                 computers[i].setSkip(true);
                             }
 

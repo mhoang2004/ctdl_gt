@@ -545,9 +545,14 @@ public:
         return skipCount;
     }
 
-    void setSkipCount()
+    void increaseSkipCount()
     {
         skipCount++;
+    }
+
+    void resetSkipCount()
+    {
+        skipCount = 0;
     }
 
     int getId()

@@ -77,7 +77,7 @@ public:
 	{
 		return ranks;
 	}
-	void setPath(string rank, int suit, string themeCard)
+	void setPath(string rank, int suit)
 	{
 		this->path = "src/cards/";
 		this->path += themeCard;
@@ -193,6 +193,7 @@ public:
 	// Constructor
 	PlayingCards()
 	{
+		playingCards.clear();
 		this->createPlayingCards();
 		this->shufflePlayingCards();
 	}
@@ -215,7 +216,7 @@ public:
 				card.setRanks(ranks[j]);
 				card.setSuits(suits[k]);
 				card.setValue(ranks[j]);
-				card.setPath(card.getRanks(), card.getSuits(), themeCard);
+				card.setPath(card.getRanks(), card.getSuits());
 				card.setTexture(loadTexture(card.getPath()));
 
 				playingCards.push_back(card);

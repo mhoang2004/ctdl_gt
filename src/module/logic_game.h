@@ -884,7 +884,7 @@ bool check_computer(vector<Card> computer, vector<Card> history)
         return true;
     }
     // Sắp xếp lại lá bài trước khi check
-    mergeSort(computer, 0, (int)computer.size() - 1);
+    // mergeSort(computer, 0, (int)computer.size() - 1);
 
     // Xử lý cóc
     if ((int)history.size() == 1)
@@ -1046,6 +1046,7 @@ void doneTurn(User &player, vector<Computer> &computers)
 
     if (count == 3 - gameResult.size())
     {
+        history.clear();
         if (!player.getSkip())
         {
             player.setUserTurn(true);
