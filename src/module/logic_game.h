@@ -466,9 +466,15 @@ bool checkComputerCanHit(vector<Card> computer, vector<Card> history)
         // Kiem tra sáp hoặc tú quý của máy có không
         if (mp1[index] == 3 || mp1[index] == 4)
         {
-            if (special.size() != 0 && mp[special.size() - 1] == mp1[index])
+            if (special.size() != 0 && mp[special[special.size() - 1].first] == mp1[index])
             {
-                return false;
+                for (int i = 0; i < special.size(); i++)
+                {
+                    if (special[i].first > history[0].getValue())
+                    {
+                        return false;
+                    }
+                }
             }
             return true;
         }
@@ -754,6 +760,7 @@ vector<int> cardsWillHit2(vector<Card> computer, vector<Card> history)
         // Kiem tra sáp hoặc tú quý của máy có không
         if (mp1[index] == 3 || mp1[index] == 4)
         {
+            int flag1 = 0;
             if (special.size() != 0 && mp1[index] == 3 && mp[special[special.size() - 1].first] == mp1[index])
             {
                 for (int i = 0; i < special.size(); i++)
@@ -761,6 +768,11 @@ vector<int> cardsWillHit2(vector<Card> computer, vector<Card> history)
                     if (special[i].first > history[0].getValue())
                     {
                         ans.push_back(special[i].second);
+                        flag1++;
+                    }
+                    if (flag1 == mp1[index])
+                    {
+                        break;
                     }
                 }
                 return ans;
