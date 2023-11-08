@@ -529,13 +529,25 @@ class Computer : public User
 {
 private:
     int id;
+    int skipCount;
 
 public:
     Computer(int id, PlayingCards &plCards) : User(plCards)
     {
         this->id = id;
+        this->skipCount = 0;
         this->sortCard();
         this->setWinTexture(id);
+    }
+
+    int getSkipCount()
+    {
+        return skipCount;
+    }
+
+    void setSkipCount()
+    {
+        skipCount++;
     }
 
     int getId()

@@ -11,8 +11,8 @@ using namespace std;
 #include "src/module/close.h"
 #include "src/module/texture.h"
 #include "src/module/card.h"
-#include "src/module/render.h"
 #include "src/module/user.h"
+#include "src/module/render.h"
 #include "src/module/logic_game.h"
 #include "src/module/control.h"
 
@@ -265,7 +265,7 @@ int main(int argc, char *args[])
                             else
                             {
                                 // check_com = check_computer(computers[i].getUserCards(), history[(int)history.size() - 1]);
-                                check_com = checkComputerCanHit(computers[i].getUserCards(), history[(int)history.size() - 1]);
+                                check_com = checkComputerCanHit(computers[i].getUserCards(), history[(int)history.size() - 1], computers[i]);
                             }
 
                             if (!check_com || computers[i].getIsFirst())
@@ -313,6 +313,7 @@ int main(int argc, char *args[])
                                     computers[i].animationCard(computers[i].getId());
                                 }
 
+                                renderAnimationHitComputer(history, player, computers, i);
                                 SDL_RenderClear(gRenderer);
                                 SDL_RenderCopy(gRenderer, backgroundTexture, NULL, NULL);
 
@@ -360,6 +361,7 @@ int main(int argc, char *args[])
                             {
                                 computers[i].setUserTurn(false);
                                 computers[i].printSkipText(computers[i].getId());
+                                computers[i].setSkipCount();
                                 computers[i].setSkip(true);
                             }
 

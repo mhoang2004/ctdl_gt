@@ -147,7 +147,7 @@ vector<int> cards_will_Hit_1(vector<Card> computer, vector<Card> history)
     }
 }
 
-bool checkComputerCanHit(vector<Card> computer, vector<Card> history)
+bool checkComputerCanHit(vector<Card> computer, vector<Card> history, Computer com)
 {
     // Đánh dấu lá bài của máy với lá bài trên bàn
     map<int, int> mp, mp1;
@@ -167,7 +167,7 @@ bool checkComputerCanHit(vector<Card> computer, vector<Card> history)
         return true;
     }
     // Sắp xếp lại lá bài trước khi check
-    mergeSort(computer, 0, (int)computer.size() - 1);
+    // mergeSort(computer, 0, (int)computer.size() - 1);
     // Xếp bài của máy thành sảnh, couple, single,special
     vector<pair<int, int>> couple, single, quaCards, threePairsOfPine, special; // .first is value of card, .second is index of computer's cards
     set<pair<int, int>> lobby;
@@ -434,11 +434,15 @@ bool checkComputerCanHit(vector<Card> computer, vector<Card> history)
             // Nếu lá bài thứ i của máy lớn trên bài thì cho đánh
             if (single[i].first > history[0].getValue())
             {
+                if (single[i].first == 15 && com.getSkipCount() < 3)
+                    return true;
                 return false;
             }
             // Nếu bằng nhau thì xét chất cơ rô chuồn bích (cơ =3)
             else if ((single[i].first == history[0].getValue()) && (computer[single[i].second].getSuits() < history[0].getSuits()))
             {
+                if (single[i].first == 15 && com.getSkipCount() < 3)
+                    return true;
                 return false;
             }
         }
@@ -451,11 +455,15 @@ bool checkComputerCanHit(vector<Card> computer, vector<Card> history)
             // Nếu lá bài thứ i của máy lớn trên bài thì cho đánh
             if (couple[i].first > history[0].getValue())
             {
+                if (couple[i].first == 15 && com.getSkipCount() < 3)
+                    return true;
                 return false;
             }
             // Nếu bằng nhau thì xét chất cơ rô chuồn bích (cơ =3)
             else if ((couple[i].first == history[0].getValue()) && (computer[couple[i].second].getSuits() < history[0].getSuits()))
             {
+                if (couple[i].first == 15 && com.getSkipCount() < 3)
+                    return true;
                 return false;
             }
         }
@@ -530,7 +538,7 @@ vector<int> cardsWillHit2(vector<Card> computer, vector<Card> history)
     // Đánh dấu lá bài của máy với lá bài trên bàn
     map<int, int> mp, mp1;
     // Sắp xếp lại lá bài trước khi danh
-    mergeSort(computer, 0, (int)computer.size() - 1);
+    // mergeSort(computer, 0, (int)computer.size() - 1);
     // Xếp bài của máy thành sảnh, couple, single,special
     vector<pair<int, int>> couple, single, quaCards, threePairsOfPine, special; // .first is value of card, .second is index of computer's cards
     set<pair<int, int>> lobby;
