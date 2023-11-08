@@ -21,6 +21,7 @@ void hitBtnEvent(User &player, vector<Computer> &computers)
         SDL_RenderCopy(gRenderer, backgroundTexture, NULL, NULL);
 
         player.hit();
+        renderAnimationHit(history, player, computers);
         if (player.checkWin())
             player.setPlace();
 
