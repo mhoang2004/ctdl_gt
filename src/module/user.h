@@ -3,6 +3,7 @@
 #include <algorithm>
 
 #include "algorithms.h"
+// #include "check_hit.h"
 using namespace std;
 
 vector<vector<Card>> history;
@@ -24,6 +25,7 @@ private:
     bool isSkip = false;
     bool isTurn = false;
     bool isFinish = false;
+    bool isWinner = false;
 
     SDL_Texture *winTexture = NULL;
 
@@ -74,6 +76,16 @@ public:
         {
             winTexture = loadTexture("src/image/win3.png");
         }
+    }
+
+    void setIsWinner(bool value = true)
+    {
+        isWinner = value;
+    }
+
+    bool getIsWinner()
+    {
+        return isWinner;
     }
 
     int getCardCount()
@@ -318,6 +330,25 @@ public:
             return;
         }
 
+        // vector<Card> tempSelected;
+        // for (int index : selectedCards)
+        // {
+        //     tempSelected.push_back(userCards[index]);
+        // }
+
+        // if (!check(tempSelected))
+        // {
+        //     return;
+        // }
+
+        // if (history.size() != 0)
+        // {
+        //     if (!check_hit(history.back(), tempSelected))
+        //     {
+        //         return;
+        //     }
+        // }
+
         // change turn (if not user's turn)
         isTurn = false;
         isFirst = false;
@@ -351,9 +382,21 @@ public:
     {
         isTurn = false;
         isFirst = false;
-        for (Card card : userCards)
+
+        if (gameNum == 0)
         {
-            if (card.getSuits() == SPADES && card.getValue() == 3)
+            for (Card card : userCards)
+            {
+                if (card.getSuits() == SPADES && card.getValue() == 3)
+                {
+                    isTurn = true;
+                    isFirst = true;
+                }
+            }
+        }
+        else
+        {
+            if (isWinner)
             {
                 isTurn = true;
                 isFirst = true;
