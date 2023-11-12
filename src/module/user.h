@@ -24,6 +24,7 @@ private:
     bool isSkip = false;
     bool isTurn = false;
     bool isFinish = false;
+    bool isWinner = false;
 
     SDL_Texture *winTexture = NULL;
 
@@ -120,6 +121,13 @@ public:
             // Render texture to screen
             SDL_RenderCopy(gRenderer, userCards[i].getTexture(), NULL, userCards[i].getDestinationRect());
         }
+    }
+
+    void setMoney(int x){
+        this->money += x;
+    }
+    int getMoney() const{
+        return this->money;
     }
 
     void printWinner(int id = -1)
@@ -349,11 +357,21 @@ public:
 
     void isFirstUser()
     {
-        isTurn = false;
-        isFirst = false;
-        for (Card card : userCards)
+
+        if (gameNum == 0)
         {
-            if (card.getSuits() == SPADES && card.getValue() == 3)
+            for (Card card : userCards)
+            {
+                if (card.getSuits() == SPADES && card.getValue() == 3)
+                {
+                    isTurn = true;
+                    isFirst = true;
+                }
+            }
+        }
+        else
+        {
+            if (isWinner)
             {
                 isTurn = true;
                 isFirst = true;
@@ -522,6 +540,15 @@ public:
     SDL_Texture *getWinTexture()
     {
         return winTexture;
+    }
+    void setIsWinner(bool value = true)
+    {
+        isWinner = value;
+    }
+
+    bool getIsWinner()
+    {
+        return isWinner;
     }
 };
 

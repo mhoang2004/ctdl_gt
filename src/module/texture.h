@@ -15,7 +15,7 @@ SDL_Texture *loadTexture(string path)
     SDL_Surface *loadedSurface = IMG_Load(path.c_str());
     if (loadedSurface == NULL)
     {
-        printf("Texture.h, line 18: Unable to load image %s! SDL_image Error: %s\n", path.c_str(), IMG_GetError());
+        cout << "Texture.h, line 18: Unable to load image" <<  path.c_str() << "! SDL_image Error: " << IMG_GetError() << endl;
     }
     else
     {
@@ -23,7 +23,7 @@ SDL_Texture *loadTexture(string path)
         newTexture = SDL_CreateTextureFromSurface(gRenderer, loadedSurface);
         if (newTexture == NULL)
         {
-            printf("Unable to create texture from %s! SDL Error: %s\n", path.c_str(), SDL_GetError());
+            cout << "Unable to create texture from" << path.c_str() <<  "! SDL Error:" << SDL_GetError() << endl;
         }
 
         // Get rid of old loaded surface
@@ -38,10 +38,10 @@ void loadBackground()
     // tao bo dem backgroundTexture de luu tru background (SDL_PIXELFORMAT_RGBA8888 định dạng pixel cho texture, SDL_TEXTUREACCESS_TARGET vẽ lên texture, SDL_TEXTUREACCESS_)
     backgroundTexture = SDL_CreateTexture(gRenderer, SDL_PIXELFORMAT_RGBA8888, SDL_TEXTUREACCESS_TARGET, SCREEN_WIDTH, SCREEN_HEIGHT);
 
-    SDL_Surface *backgroundSurface = IMG_Load("src/image/OIP1.png"); // Thay bằng đường dẫn đến hình ảnh của bạn
+    SDL_Surface *backgroundSurface = IMG_Load("src/image/background.png"); // Thay bằng đường dẫn đến hình ảnh của bạn
     if (backgroundSurface == nullptr)
     {
-        printf("Failed to load image! SDL_image Error: %s\n", IMG_GetError());
+        cout << "Failed to load image! SDL_image Error: " <<  IMG_GetError() << endl;
     }
     else
     {
@@ -51,3 +51,4 @@ void loadBackground()
         SDL_FreeSurface(backgroundSurface);
     }
 }
+

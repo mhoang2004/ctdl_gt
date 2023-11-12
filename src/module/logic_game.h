@@ -167,7 +167,7 @@ bool checkComputerCanHit(vector<Card> computer, vector<Card> history, Computer c
         return true;
     }
     // Sắp xếp lại lá bài trước khi check
-    // mergeSort(computer, 0, (int)computer.size() - 1);
+    mergeSort(computer, 0, (int)computer.size() - 1);
     // Xếp bài của máy thành sảnh, couple, single,special
     vector<pair<int, int>> couple, single, quaCards, threePairsOfPine, special; // .first is value of card, .second is index of computer's cards
     set<pair<int, int>> lobby;
@@ -329,11 +329,54 @@ bool checkComputerCanHit(vector<Card> computer, vector<Card> history, Computer c
             }
             else if (mp[computer[i].getValue()] == 2)
             {
-                couple.push_back({computer[i].getValue(), i});
+                if (threePairsOfPine.size() == 0)
+                {
+                    couple.push_back({computer[i].getValue(), i});
+                }
+                else
+                {
+                    bool checkPair = true;
+                    for (int p = 0; p < threePairsOfPine.size(); p++)
+                    {
+                        if (computer[i].getValue() == threePairsOfPine[p].first && i == threePairsOfPine[p].second)
+                        {
+                            checkPair = false;
+                            break;
+                        }
+                    }
+                    if (checkPair)
+                    {
+                        couple.push_back({computer[i].getValue(), i});
+                    }
+                }
             }
             else if (mp[computer[i].getValue()] == 3)
             {
-                special.push_back({computer[i].getValue(), i});
+                // Kiem tra thử xem trong 3 đôi thông có không
+                if (threePairsOfPine.size() == 0)
+                {
+                    special.push_back({computer[i].getValue(), i});
+                }
+                else
+                {
+                    bool checkPair2 = true;
+                    for (int p = 0; p < threePairsOfPine.size(); p++)
+                    {
+                        if (computer[i].getValue() == threePairsOfPine[p].first && i == threePairsOfPine[p].second)
+                        {
+                            checkPair2 = false;
+                            break;
+                        }
+                    }
+                    if (checkPair2)
+                    {
+                        special.push_back({computer[i].getValue(), i});
+                    }
+                    else
+                    {
+                        single.push_back({computer[i].getValue(), i});
+                    }
+                }
             }
         }
     }
@@ -459,8 +502,8 @@ bool checkComputerCanHit(vector<Card> computer, vector<Card> history, Computer c
                     return true;
                 return false;
             }
-            // Nếu bằng nhau thì xét chất cơ rô chuồn bích (cơ =3)
-            else if ((couple[i].first == history[0].getValue()) && (computer[couple[i].second].getSuits() < history[0].getSuits()))
+            // Nếu bằng nhau thì xét chất cơ rô chuồn bích (cơ =3) computer[couple[i].second].getSuits() <
+            else if ((couple[i].first == history[0].getValue()) && (history[1].getSuits() != 3))
             {
                 if (couple[i].first == 15 && com.getSkipCount() < 3)
                     return true;
@@ -474,15 +517,9 @@ bool checkComputerCanHit(vector<Card> computer, vector<Card> history, Computer c
         // Kiem tra sáp hoặc tú quý của máy có không
         if (mp1[index] == 3 || mp1[index] == 4)
         {
-            if (special.size() != 0 && mp[special[special.size() - 1].first] == mp1[index])
+            if (special.size() != 0 && mp[special.size() - 1] == mp1[index])
             {
-                for (int i = 0; i < special.size(); i++)
-                {
-                    if (special[i].first > history[0].getValue())
-                    {
-                        return false;
-                    }
-                }
+                return false;
             }
             return true;
         }
@@ -512,7 +549,7 @@ bool checkComputerCanHit(vector<Card> computer, vector<Card> history, Computer c
                     {
                         return false;
                     }
-                    else if (computer[it.second - cnt + 1].getValue() == history[0].getValue() && computer[it.second - cnt + 1].getSuits() < history[0].getSuits())
+                    else if (computer[it.second - cnt + 1].getValue() == history[0].getValue() && computer[it.second].getSuits() < history[history.size() - 1].getSuits())
                     {
                         return false;
                     }
@@ -621,11 +658,11 @@ vector<int> cardsWillHit2(vector<Card> computer, vector<Card> history)
             }
         }
     }
-    for (int i = 0; i < v.size(); i++)
-    {
-        cout << v[i].first << " ";
-    }
-    cout << endl;
+    cout << "Day la ham danh " << endl;
+    // for (int i = 0; i < v.size(); i++)
+    // {
+    //     cout << v[i].first << " ";
+    // }
     int count = 0;
     // Dùng sliding window
     int a[16];
@@ -666,7 +703,6 @@ vector<int> cardsWillHit2(vector<Card> computer, vector<Card> history)
         {
             mp[x.first]--; // Danh dau lai bai
         }
-        cout << endl;
     }
 
     // Single + Couple + special
@@ -684,7 +720,7 @@ vector<int> cardsWillHit2(vector<Card> computer, vector<Card> history)
                 bool flag = true;
                 for (int l = 0; l < threePairsOfPine.size(); l++)
                 {
-                    if (computer[threePairsOfPine[l].second].getValue() == computer[i].getValue() && threePairsOfPine[l].second == i)
+                    if (threePairsOfPine[l].first == computer[i].getValue() && threePairsOfPine[l].second == i)
                     {
                         flag = false;
                         break;
@@ -697,7 +733,23 @@ vector<int> cardsWillHit2(vector<Card> computer, vector<Card> history)
             }
             else if (mp[computer[i].getValue()] == 3)
             {
-                special.push_back({computer[i].getValue(), i});
+                bool flag = true;
+                for (int l = 0; l < threePairsOfPine.size(); l++)
+                {
+                    if (computer[threePairsOfPine[l].second].getValue() == computer[i].getValue() && threePairsOfPine[l].second == i)
+                    {
+                        flag = false;
+                        break;
+                    }
+                }
+                if (flag)
+                {
+                    special.push_back({computer[i].getValue(), i});
+                }
+                else
+                {
+                    single.push_back({computer[i].getValue(), i});
+                }
             }
         }
     }
@@ -754,7 +806,7 @@ vector<int> cardsWillHit2(vector<Card> computer, vector<Card> history)
                 return ans;
             }
             // Nếu bằng nhau thì xét chất cơ rô chuồn bích (cơ =3)
-            else if ((couple[i].first == history[0].getValue()) && (computer[couple[i].second].getSuits() < history[0].getSuits()))
+            else if ((couple[i].first == history[0].getValue()) && (history[0].getSuits() != 3 && history[1].getSuits() != 3))
             {
                 ans.push_back(couple[i].second);
                 ans.push_back(couple[i + 1].second);
@@ -768,7 +820,6 @@ vector<int> cardsWillHit2(vector<Card> computer, vector<Card> history)
         // Kiem tra sáp hoặc tú quý của máy có không
         if (mp1[index] == 3 || mp1[index] == 4)
         {
-            int flag1 = 0;
             if (special.size() != 0 && mp1[index] == 3 && mp[special[special.size() - 1].first] == mp1[index])
             {
                 for (int i = 0; i < special.size(); i++)
@@ -776,11 +827,6 @@ vector<int> cardsWillHit2(vector<Card> computer, vector<Card> history)
                     if (special[i].first > history[0].getValue())
                     {
                         ans.push_back(special[i].second);
-                        flag1++;
-                    }
-                    if (flag1 == mp1[index])
-                    {
-                        break;
                     }
                 }
                 return ans;
@@ -808,6 +854,7 @@ vector<int> cardsWillHit2(vector<Card> computer, vector<Card> history)
             {
                 i++;
                 valFirst = it.first;
+                ans.push_back(it.second);
                 continue;
             }
             if ((it).first - 1 == valFirst)
@@ -825,7 +872,8 @@ vector<int> cardsWillHit2(vector<Card> computer, vector<Card> history)
                     {
                         return ans;
                     }
-                    else if (computer[it.second - cnt + 1].getValue() == history[0].getValue() && computer[it.second - cnt + 1].getSuits() < history[0].getSuits())
+                    // computer[it.second - cnt + 1].getSuits() < history[0].getSuits()
+                    else if (computer[it.second - cnt + 1].getValue() == history[0].getValue() && history[2].getSuits() != 3)
                     {
                         return ans;
                     }
@@ -864,7 +912,8 @@ vector<int> cardsWillHit2(vector<Card> computer, vector<Card> history)
             {
                 return ans;
             }
-            else if (b[0] == history[0].getValue() && computer[(*(it--)).second].getSuits() < history[0].getSuits() && b[k1 - 1] - b[0] + 1 == k1)
+            // computer[(*(it--)).second].getSuits()
+            else if (b[0] == history[0].getValue() && history[k1 - 1].getSuits() != 3 && b[k1 - 1] - b[0] + 1 == k1)
             {
                 return ans;
             }
@@ -877,7 +926,8 @@ vector<int> cardsWillHit2(vector<Card> computer, vector<Card> history)
                 {
                     return ans;
                 }
-                else if ((b[i - k1 + 1] == history[0].getValue()) && (computer[(*it).second].getSuits() < history[0].getSuits()) && (b[i] - b[i - k1 + 1] + 1 == k1))
+                //(computer[(*it).second].getSuits()
+                else if ((b[i - k1 + 1] == history[0].getValue()) && history[0].getSuits() != 3 && (b[i] - b[i - k1 + 1] + 1 == k1))
                 {
                     return ans;
                 }

@@ -1,6 +1,8 @@
-SDL_Rect skipBtnArea = {210, 440, 135, 59};
-SDL_Rect hitBtnArea = {800, 440, 135, 59};
-SDL_Rect againBtnArea = {470, 300, 155, 50};
+#include "score.h"
+
+SDL_Rect skipBtnArea = {210, 440, 200, 100};
+SDL_Rect hitBtnArea = {800, 440, 200, 100};
+SDL_Rect againBtnArea = {470, 300, 200, 100};
 
 void skipBtnEvent(User &player, vector<Computer> &computers)
 {
@@ -19,7 +21,7 @@ void hitBtnEvent(User &player, vector<Computer> &computers)
 
         SDL_RenderClear(gRenderer);
         SDL_RenderCopy(gRenderer, backgroundTexture, NULL, NULL);
-
+        printResult(player, computers);
         player.hit();
         renderAnimationHit(history, player, computers);
         if (player.checkWin())
@@ -71,7 +73,7 @@ void renderSelectEvent(User player, vector<Computer> computers)
 
     SDL_RenderClear(gRenderer);
     SDL_RenderCopy(gRenderer, backgroundTexture, NULL, NULL);
-
+    printResult(player, computers);
     if (!player.getIsFirst())
     {
         renderSkipBtn();

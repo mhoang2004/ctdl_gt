@@ -8,7 +8,8 @@ void merge(vector<Card> &arr, int p, int q, int r)
     int n1 = q - p + 1;
     int n2 = r - q;
 
-    Card L[n1], M[n2];
+    Card *L = new Card[n1];
+    Card *M = new Card[n2];
 
     for (int i = 0; i < n1; i++)
         L[i] = arr[p + i];
@@ -67,6 +68,8 @@ void merge(vector<Card> &arr, int p, int q, int r)
         j++;
         k++;
     }
+    delete[] L;
+    delete[] M;
 }
 
 // Divide the array into two subarrays, sort them and merge them

@@ -24,13 +24,15 @@ valid hit
 #include "src/module/render.h"
 #include "src/module/logic_game.h"
 #include "src/module/control.h"
+#include "src/module/score.h"
 
-bool checkWinByDefault(User player, vector<Computer> computers)
+bool checkWinByDefault(User &player, vector<Computer> &computers)
 {
     bool winByDefault = false;
     if (player.isSpecialCards())
     {
         renderPassWin(player.getWinTexture());
+        player.setMoney(10);
         winByDefault = true;
     }
     for (int i = 0; i < COMPUTER_NUM; i++)
@@ -38,6 +40,7 @@ bool checkWinByDefault(User player, vector<Computer> computers)
         if (computers[i].isSpecialCards())
         {
             renderPassWin(computers[i].getWinTexture(), i + 1);
+            computers[i].setMoney(10);
             winByDefault = true;
         }
     }
@@ -46,9 +49,11 @@ bool checkWinByDefault(User player, vector<Computer> computers)
 
 void playAgain(PlayingCards &plCards, User &player, vector<Computer> &computers)
 {
+    gameNum++;
+
     SDL_RenderClear(gRenderer);
     SDL_RenderCopy(gRenderer, backgroundTexture, NULL, NULL);
-
+    printResult(player, computers);
     history.clear();
     gameResult.clear();
 
@@ -135,9 +140,12 @@ int main(int argc, char *args[])
             computers.push_back(temp);
         }
 
+        readData(player, computers);
+        printResult(player, computers);
+
         string backPath = "src/cards/" + themeCard + "BACK.png";
         backTexture = loadTexture(backPath);
-        hitBtnTexture = loadTexture("src/image/play.png");
+        hitBtnTexture = loadTexture("src/image/hit.png");
         skipBtnTexture = loadTexture("src/image/skip.png");
         againBtnTexture = loadTexture("src/image/again.png");
 
@@ -248,6 +256,7 @@ int main(int argc, char *args[])
             // computer play
             if (!isGameFinish)
             {
+                
                 doneTurn(player, computers);
 
                 if (!player.isUserTurn() || player.getIsFinish())
@@ -260,15 +269,15 @@ int main(int argc, char *args[])
 
                             doneTurn(player, computers);
                             bool check_com = true;
-
+                            
                             // rand() % 2 (if computers[i] CAN hit?)
-                            cout << "May thu  " << i << endl;
-                            cout << "Bai cua may thu " << i << endl;
+                            //cout << "May thu  " << i << endl;
+                            //cout << "Bai cua may thu " << i << endl;
                             for (int k = 0; k < (int)computers[i].getUserCards().size(); k++)
                             {
-                                cout << computers[i].getUserCards()[k].getValue() << ' ';
+                                //cout << computers[i].getUserCards()[k].getValue() << ' ';
                             }
-                            cout << endl;
+                            //cout << endl;
                             if ((int)history.size() == 0)
                                 check_com = false;
                             else
@@ -279,15 +288,16 @@ int main(int argc, char *args[])
 
                             if (!check_com || computers[i].getIsFirst())
                             {
-                                cout << "La computer thu " << i << " danh " << endl;
+
+                                //cout << "La computer thu " << i << " danh " << endl;
                                 if (computers[i].getIsFirst())
                                 {
                                     for (int j = 0; j < computers[i].getFirstCards(); j++)
                                     {
                                         computers[i].changeSelected(j);
-                                        cout << computers[i].getUserCards()[j].getValue() << ' ';
+                                        //cout << computers[i].getUserCards()[j].getValue() << ' ';
                                     }
-                                    cout << endl;
+                                    computers[i].hit();
                                     computers[i].setIsFirst(false);
                                 }
                                 else // what cards computers[i] will hit
@@ -296,19 +306,23 @@ int main(int argc, char *args[])
                                     // for (int k = 0; k < (int)card_will_hit.size(); k++)
                                     // {
                                     //     computers[i].changeSelected(card_will_hit[k]);
-                                    //     cout << computers[i].getUserCards()[card_will_hit[k]].getValue() << ' ';
+                                    //     //cout << computers[i].getUserCards()[card_will_hit[k]].getValue() << ' ';
                                     // }
-                                    // cout << endl;
+                                    // //cout << endl;
+                                    
+                                    if((history[(int)history.size() - 1][0].getValue() == 15) && ((int)history.size() > 0))
+                                    {
+                                        calculatePigChoppingMoney(computers[i], history[(int)history.size() - 1]);
+                                    }
                                     vector<int> cardWillHit = cardsWillHit2(computers[i].getUserCards(), history[(int)history.size() - 1]);
                                     for (int k = 0; k < (int)cardWillHit.size(); k++)
                                     {
                                         computers[i].changeSelected(cardWillHit[k]);
-                                        cout << computers[i].getUserCards()[cardWillHit[k]].getValue() << ' ';
+                                        //cout << computers[i].getUserCards()[cardWillHit[k]].getValue() << ' ';
                                     }
-                                    cout << endl;
+                                    computers[i].hit();
+                                    cardWillHit.clear();
                                 }
-
-                                computers[i].hit();
 
                                 if (computers[i].checkWin())
                                 {
@@ -325,6 +339,7 @@ int main(int argc, char *args[])
                                 renderAnimationHitComputer(history, player, computers, i);
                                 SDL_RenderClear(gRenderer);
                                 SDL_RenderCopy(gRenderer, backgroundTexture, NULL, NULL);
+                                printResult(player, computers);
 
                                 if (gameResult.size() == 3)
                                 {
@@ -410,43 +425,71 @@ int main(int argc, char *args[])
                         }
                     }
 
+
                     if (!player.getIsFinish() && !player.getSkip())
                     {
                         player.setUserTurn(true);
+                        
                     }
 
                     doneTurn(player, computers);
+                }
+                // else
+                // {
+                //     if((int)history.size() > 1 && history[history.size() - 2][0].getValue() == 15 && history[history.size() - 1].size() >= 6)
+                //     {
+                //         calculatePigChoppingMoney(player, computers, history[history.size() - 1]);
+                //     }
+                // }
+                
+                // check if game finish
+                isGameFinish = true;
+            
+                for (Computer computer : computers)
+                {
+                    if (!computer.getIsFinish())
+                    {
+                        isGameFinish = false;
+                        break;
+                    }
+                }
+
+                if (isGameFinish)
+                {
+                    SDL_RenderClear(gRenderer);
+                    SDL_RenderCopy(gRenderer, backgroundTexture, NULL, NULL);
+
+                    calculateEndGameMoney(player, computers, gameResult);
+                    printResult(player, computers);
+
+                    player.setIsWinner(false);
+                    for (Computer &c : computers)
+                        c.setIsWinner(false);
+
+                    int firstPlace = gameResult[0];
+                    if (firstPlace == -1)
+                    {
+                        player.setIsWinner(); // true
+                    }
+                    else
+                    {
+                        computers[firstPlace - 1].setIsWinner();
+                    }
+
+                    for (Computer computer : computers)
+                    {
+                        computer.printWinner(computer.getId());
+                    }
+                    player.printWinner();
+                    renderAgainBtn();
+
+                    SDL_RenderPresent(gRenderer);
                 }
             }
 
             //----------------------------------------------------------------------------
 
-            // check if game finish
-            isGameFinish = true;
-            for (Computer computer : computers)
-            {
-                if (!computer.getIsFinish())
-                {
-                    isGameFinish = false;
-                    break;
-                }
-            }
-
-            if (isGameFinish)
-            {
-                SDL_RenderClear(gRenderer);
-                SDL_RenderCopy(gRenderer, backgroundTexture, NULL, NULL);
-
-                for (Computer computer : computers)
-                {
-                    computer.printWinner(computer.getId());
-                }
-                player.printWinner();
-
-                renderAgainBtn();
-
-                SDL_RenderPresent(gRenderer);
-            }
+           
         }
 
         // Free resources and close SDL

@@ -1,22 +1,23 @@
 #pragma once
+#include "score.h"
 
 void renderHitBtn()
 {
     SDL_Rect destinationRect;
-    destinationRect = {800, 440, 150, 65};
+    destinationRect = {800, 440, 200, 100};
     SDL_RenderCopy(gRenderer, hitBtnTexture, NULL, &destinationRect);
 }
 
 void renderSkipBtn()
 {
     SDL_Rect destinationRect;
-    destinationRect = {210, 440, 155, 50};
+    destinationRect = {210, 440, 200, 100};
     SDL_RenderCopy(gRenderer, skipBtnTexture, NULL, &destinationRect);
 }
 void renderAgainBtn()
 {
     SDL_Rect destinationRect;
-    destinationRect = {530, 320, 155, 50};
+    destinationRect = {530, 320, 200, 100};
     SDL_RenderCopy(gRenderer, againBtnTexture, NULL, &destinationRect);
 }
 
@@ -97,6 +98,7 @@ void renderAnimationHit(vector<vector<Card>> history, User &player, vector<Compu
 
                     SDL_RenderPresent(gRenderer);
                     SDL_RenderCopy(gRenderer, backgroundTexture, NULL, NULL);
+                    printResult(player, computers);
                     for (Computer &computer : computers)
                     {
                         computer.printBackCard();
@@ -179,6 +181,7 @@ void renderAnimationHitComputer(vector<vector<Card>> history, User &player, vect
 
                     SDL_RenderPresent(gRenderer);
                     SDL_RenderCopy(gRenderer, backgroundTexture, NULL, NULL);
+                    printResult(player, computers);
                     for (Computer &computer : computers)
                     {
                         computer.printBackCard();
