@@ -11,8 +11,8 @@ play again
 money
 turn if a computer win
 valid hit
-
-
+first game must hit 3 of spade
+three of 2
 */
 
 #include "src/module/global.h"
@@ -46,6 +46,8 @@ bool checkWinByDefault(User player, vector<Computer> computers)
 
 void playAgain(PlayingCards &plCards, User &player, vector<Computer> &computers)
 {
+    gameNum++;
+
     SDL_RenderClear(gRenderer);
     SDL_RenderCopy(gRenderer, backgroundTexture, NULL, NULL);
 
@@ -313,6 +315,8 @@ int main(int argc, char *args[])
                                 if (computers[i].checkWin())
                                 {
                                     computers[i].setPlace();
+
+                                    
                                 }
                                 else
                                 {
@@ -417,35 +421,48 @@ int main(int argc, char *args[])
 
                     doneTurn(player, computers);
                 }
-            }
 
-            //----------------------------------------------------------------------------
-
-            // check if game finish
-            isGameFinish = true;
-            for (Computer computer : computers)
-            {
-                if (!computer.getIsFinish())
-                {
-                    isGameFinish = false;
-                    break;
-                }
-            }
-
-            if (isGameFinish)
-            {
-                SDL_RenderClear(gRenderer);
-                SDL_RenderCopy(gRenderer, backgroundTexture, NULL, NULL);
-
+                // check if game finish
+                isGameFinish = true;
                 for (Computer computer : computers)
                 {
-                    computer.printWinner(computer.getId());
+                    if (!computer.getIsFinish())
+                    {
+                        isGameFinish = false;
+                        break;
+                    }
                 }
-                player.printWinner();
 
-                renderAgainBtn();
+                if (isGameFinish)
+                {
+                    SDL_RenderClear(gRenderer);
+                    SDL_RenderCopy(gRenderer, backgroundTexture, NULL, NULL);
 
-                SDL_RenderPresent(gRenderer);
+                    // who win the game?
+                    player.setIsWinner(false);
+                    for (Computer &c : computers)
+                        c.setIsWinner(false);
+
+                    int firstPlace = gameResult[0];
+                    if (firstPlace == -1)
+                    {
+                        player.setIsWinner(); // true
+                    }
+                    else
+                    {
+                        computers[firstPlace - 1].setIsWinner();
+                    }
+
+                    for (Computer computer : computers)
+                    {
+                        computer.printWinner(computer.getId());
+                    }
+                    player.printWinner();
+
+                    renderAgainBtn();
+
+                    SDL_RenderPresent(gRenderer);
+                }
             }
         }
 
