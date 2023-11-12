@@ -3,6 +3,7 @@
 #include <algorithm>
 
 #include "algorithms.h"
+// #include "check_hit.h"
 using namespace std;
 
 vector<vector<Card>> history;
@@ -75,6 +76,16 @@ public:
         {
             winTexture = loadTexture("src/image/win3.png");
         }
+    }
+
+    void setIsWinner(bool value = true)
+    {
+        isWinner = value;
+    }
+
+    bool getIsWinner()
+    {
+        return isWinner;
     }
 
     int getCardCount()
@@ -326,6 +337,25 @@ public:
             return;
         }
 
+        // vector<Card> tempSelected;
+        // for (int index : selectedCards)
+        // {
+        //     tempSelected.push_back(userCards[index]);
+        // }
+
+        // if (!check(tempSelected))
+        // {
+        //     return;
+        // }
+
+        // if (history.size() != 0)
+        // {
+        //     if (!check_hit(history.back(), tempSelected))
+        //     {
+        //         return;
+        //     }
+        // }
+
         // change turn (if not user's turn)
         isTurn = false;
         isFirst = false;
@@ -357,6 +387,11 @@ public:
 
     void isFirstUser()
     {
+<<<<<<< HEAD
+=======
+        isTurn = false;
+        isFirst = false;
+>>>>>>> 34d237b7894d9e5cb9d3aad45c80e8ca32a4eb45
 
         if (gameNum == 0)
         {

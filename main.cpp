@@ -11,8 +11,8 @@ play again
 money
 turn if a computer win
 valid hit
-
-
+first game must hit 3 of spade
+three of 2
 */
 
 #include "src/module/global.h"
@@ -327,6 +327,8 @@ int main(int argc, char *args[])
                                 if (computers[i].checkWin())
                                 {
                                     computers[i].setPlace();
+
+                                    
                                 }
                                 else
                                 {
@@ -434,6 +436,7 @@ int main(int argc, char *args[])
 
                     doneTurn(player, computers);
                 }
+<<<<<<< HEAD
                 // else
                 // {
                 //     if((int)history.size() > 1 && history[history.size() - 2][0].getValue() == 15 && history[history.size() - 1].size() >= 6)
@@ -445,6 +448,11 @@ int main(int argc, char *args[])
                 // check if game finish
                 isGameFinish = true;
             
+=======
+
+                // check if game finish
+                isGameFinish = true;
+>>>>>>> 34d237b7894d9e5cb9d3aad45c80e8ca32a4eb45
                 for (Computer computer : computers)
                 {
                     if (!computer.getIsFinish())
@@ -459,9 +467,13 @@ int main(int argc, char *args[])
                     SDL_RenderClear(gRenderer);
                     SDL_RenderCopy(gRenderer, backgroundTexture, NULL, NULL);
 
+<<<<<<< HEAD
                     calculateEndGameMoney(player, computers, gameResult);
                     printResult(player, computers);
 
+=======
+                    // who win the game?
+>>>>>>> 34d237b7894d9e5cb9d3aad45c80e8ca32a4eb45
                     player.setIsWinner(false);
                     for (Computer &c : computers)
                         c.setIsWinner(false);
@@ -481,15 +493,22 @@ int main(int argc, char *args[])
                         computer.printWinner(computer.getId());
                     }
                     player.printWinner();
+<<<<<<< HEAD
+=======
+
+>>>>>>> 34d237b7894d9e5cb9d3aad45c80e8ca32a4eb45
                     renderAgainBtn();
 
                     SDL_RenderPresent(gRenderer);
                 }
             }
+<<<<<<< HEAD
 
             //----------------------------------------------------------------------------
 
            
+=======
+>>>>>>> 34d237b7894d9e5cb9d3aad45c80e8ca32a4eb45
         }
 
         // Free resources and close SDL
