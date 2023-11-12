@@ -1228,6 +1228,7 @@ void doneTurn(User &player, vector<Computer> &computers)
         SDL_RenderCopy(gRenderer, backgroundTexture, NULL, NULL);
 
         renderHistory(history);
+        printResult(player, computers);
 
         if (!player.getIsFinish())
         {

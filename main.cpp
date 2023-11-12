@@ -7,8 +7,6 @@
 using namespace std;
 
 /*
-play again
-money
 turn if a computer win
 valid hit
 first game must hit 3 of spade
