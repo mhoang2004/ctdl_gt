@@ -134,10 +134,12 @@ public:
         }
     }
 
-    void setMoney(int x){
+    void setMoney(int x)
+    {
         this->money += x;
     }
-    int getMoney() const{
+    int getMoney() const
+    {
         return this->money;
     }
 
@@ -293,6 +295,10 @@ public:
             if (tmp_1_value[i] != tmp_2_value[i])
                 return 0;
         }
+
+        delete[] tmp_1_value;
+        delete[] tmp_2_value;
+
         return 1;
     }
 
@@ -574,7 +580,6 @@ public:
     {
         return winTexture;
     }
-
 };
 
 class Computer : public User
