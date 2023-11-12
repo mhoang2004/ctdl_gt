@@ -256,7 +256,7 @@ int main(int argc, char *args[])
             // computer play
             if (!isGameFinish)
             {
-                
+
                 doneTurn(player, computers);
 
                 if (!player.isUserTurn() || player.getIsFinish())
@@ -269,15 +269,15 @@ int main(int argc, char *args[])
 
                             doneTurn(player, computers);
                             bool check_com = true;
-                            
+
                             // rand() % 2 (if computers[i] CAN hit?)
-                            //cout << "May thu  " << i << endl;
-                            //cout << "Bai cua may thu " << i << endl;
+                            // cout << "May thu  " << i << endl;
+                            // cout << "Bai cua may thu " << i << endl;
                             for (int k = 0; k < (int)computers[i].getUserCards().size(); k++)
                             {
-                                //cout << computers[i].getUserCards()[k].getValue() << ' ';
+                                // cout << computers[i].getUserCards()[k].getValue() << ' ';
                             }
-                            //cout << endl;
+                            // cout << endl;
                             if ((int)history.size() == 0)
                                 check_com = false;
                             else
@@ -289,13 +289,13 @@ int main(int argc, char *args[])
                             if (!check_com || computers[i].getIsFirst())
                             {
 
-                                //cout << "La computer thu " << i << " danh " << endl;
+                                cout << "La computer thu " << i << " danh " << endl;
                                 if (computers[i].getIsFirst())
                                 {
                                     for (int j = 0; j < computers[i].getFirstCards(); j++)
                                     {
                                         computers[i].changeSelected(j);
-                                        //cout << computers[i].getUserCards()[j].getValue() << ' ';
+                                        // cout << computers[i].getUserCards()[j].getValue() << ' ';
                                     }
                                     computers[i].hit();
                                     computers[i].setIsFirst(false);
@@ -309,8 +309,8 @@ int main(int argc, char *args[])
                                     //     //cout << computers[i].getUserCards()[card_will_hit[k]].getValue() << ' ';
                                     // }
                                     // //cout << endl;
-                                    
-                                    if((history[(int)history.size() - 1][0].getValue() == 15) && ((int)history.size() > 0))
+
+                                    if ((history[(int)history.size() - 1][0].getValue() == 15) && ((int)history.size() > 0))
                                     {
                                         calculatePigChoppingMoney(computers[i], history[(int)history.size() - 1]);
                                     }
@@ -318,7 +318,7 @@ int main(int argc, char *args[])
                                     for (int k = 0; k < (int)cardWillHit.size(); k++)
                                     {
                                         computers[i].changeSelected(cardWillHit[k]);
-                                        //cout << computers[i].getUserCards()[cardWillHit[k]].getValue() << ' ';
+                                        // cout << computers[i].getUserCards()[cardWillHit[k]].getValue() << ' ';
                                     }
                                     computers[i].hit();
                                     cardWillHit.clear();
@@ -327,8 +327,6 @@ int main(int argc, char *args[])
                                 if (computers[i].checkWin())
                                 {
                                     computers[i].setPlace();
-
-                                    
                                 }
                                 else
                                 {
@@ -427,11 +425,9 @@ int main(int argc, char *args[])
                         }
                     }
 
-
                     if (!player.getIsFinish() && !player.getSkip())
                     {
                         player.setUserTurn(true);
-                        
                     }
 
                     doneTurn(player, computers);
@@ -444,7 +440,7 @@ int main(int argc, char *args[])
                 //         calculatePigChoppingMoney(player, computers, history[history.size() - 1]);
                 //     }
                 // }
-                
+
                 // check if game finish
                 isGameFinish = true;
 

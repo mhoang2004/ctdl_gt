@@ -517,61 +517,115 @@ bool checkComputerCanHit(vector<Card> computer, vector<Card> history, Computer c
         // Kiem tra sáp hoặc tú quý của máy có không
         if (mp1[index] == 3 || mp1[index] == 4)
         {
-            if (special.size() != 0 && mp[special.size() - 1] == mp1[index])
+            if (special.size() != 0)
             {
-                return false;
+                for (int i = 0; i < special.size(); i++)
+                {
+                    if (special[i].first > history[0].getValue() && mp1[index] == mp[special[i].first])
+                    {
+                        return false;
+                    }
+                }
+                cout << "Khong co special lon hon history " << endl;
             }
+            else if (quaCards.size() != 0)
+            {
+                for (int i = 0; i < quaCards.size(); i++)
+                {
+                    if (quaCards[i].first > history[0].getValue() && mp1[index] == mp[quaCards[i].first])
+                    {
+                        return false;
+                    }
+                }
+                cout << "Khong co quaCards lon hon history " << endl;
+            }
+            cout << "Ham nay kiem tra tai sao lai skip khi co sanh" << endl;
             return true;
         }
         int cnt = 1;
         bool check = false;
         int i = 0;
-        int valueFirst = 0;
-        for (pair<int, int> it : lobby)
+        int valueFirst = 0, valuePos = 0;
+        if (lobby.size() >= history.size())
         {
-            if (i == 0)
+            cout << "Size of history " << history.size() << endl;
+            for (pair<int, int> it : lobby)
             {
-                i++;
-                valueFirst = it.first;
-                continue;
-            }
-            if (it.first - 1 == valueFirst)
-            {
-                valueFirst = it.first;
-                cnt++;
-            }
-            else
-            {
-                valueFirst = it.first;
-                if (cnt == (int)history.size())
+                if (i == 0)
                 {
-                    if (computer[it.second - cnt + 1].getValue() > history[0].getValue())
+                    i++;
+                    valueFirst = it.first;
+                    valuePos = it.second;
+                    continue;
+                }
+                if (it.first - 1 == valueFirst)
+                {
+                    valueFirst = it.first;
+                    valuePos = it.second;
+                    cnt++;
+                }
+                else
+                {
+                    cout << cnt << endl;
+                    valueFirst = it.first;
+                    if (cnt == (int)history.size())
                     {
-                        return false;
+                        cout << "Vi tri la dau " << it.second - cnt + 1 << endl;
+                        if (computer[valuePos].getValue() > history[(int)history.size() - 1].getValue())
+                        {
+                            return false;
+                        }
+                        else if (computer[valuePos].getValue() == history[(int)history.size() - 1].getValue() && computer[valuePos].getSuits() < history[history.size() - 1].getSuits())
+                        {
+                            return false;
+                        }
+                        cnt = 1;
                     }
-                    else if (computer[it.second - cnt + 1].getValue() == history[0].getValue() && computer[it.second].getSuits() < history[history.size() - 1].getSuits())
+                    else if (cnt < (int)history.size())
                     {
-                        return false;
+                        cnt = 1;
                     }
-                    cnt = 1;
+                    else if (cnt > (int)history.size())
+                    {
+                        if (computer[valuePos].getValue() > history[(int)history.size() - 1].getValue())
+                        {
+                            check = true;
+                        }
+                        else if (computer[valuePos].getValue() == history[(int)history.size() - 1].getValue() && computer[valuePos].getSuits() < history[history.size() - 1].getSuits())
+                        {
+                            check = true;
+                        }
+                        cnt = 1;
+                    }
+                    valuePos = it.second;
                 }
-                else if (cnt < (int)history.size())
+            }
+            if (cnt != 1 && cnt >= history.size())
+            {
+                cnt = 1;
+                for (auto it : lobby)
                 {
-                    cnt = 1;
+                    if (it.first > history[0].getValue())
+                    {
+                        cnt++;
+                        if (cnt == history.size())
+                        {
+                            return false;
+                        }
+                    }
                 }
-                else if (cnt > (int)history.size())
-                {
-                    check = true;
-                    cnt = 1;
-                }
+                return true;
             }
         }
-        cout << "Kiem tra xong " << endl;
+        cout << "Kiem tra xong 111 " << endl;
         if (check)
         {
             return false;
         }
-        return true;
+        else
+        {
+            return true;
+        }
     }
 }
 
@@ -847,33 +901,53 @@ vector<int> cardsWillHit2(vector<Card> computer, vector<Card> history)
         int cnt = 1;
         bool check = false;
         int i = 0;
-        int valFirst = 0; // Save the last it.first
+        int valFirst = 0, valPos = 0; // Save the last it.first
+
         for (pair<int, int> it : lobby)
         {
             if (i == 0)
             {
                 i++;
                 valFirst = it.first;
+                valPos = it.second;
                 ans.push_back(it.second);
                 continue;
             }
             if ((it).first - 1 == valFirst)
             {
                 valFirst = it.first;
+                valPos = it.second;
                 cnt++;
                 ans.push_back(it.second);
+                if (cnt == history.size())
+                {
+                    if (valFirst > history[history.size() - 1].getValue())
+                    {
+                        return ans;
+                    }
+                    else if (valFirst == history[history.size() - 1].getValue() && computer[valPos].getSuits() < history[history.size() - 1].getSuits())
+                    {
+                        return ans;
+                    }
+                    else
+                    {
+                        ans.clear();
+                        cnt = 1;
+                        ans.push_back(it.second);
+                    }
+                }
             }
             else
             {
                 valFirst = it.first;
                 if (cnt == (int)history.size())
                 {
-                    if (computer[it.second - cnt + 1].getValue() > history[0].getValue())
+                    if (computer[valPos].getValue() > history[(int)history.size() - 1].getValue())
                     {
                         return ans;
                     }
                     // computer[it.second - cnt + 1].getSuits() < history[0].getSuits()
-                    else if (computer[it.second - cnt + 1].getValue() == history[0].getValue() && history[2].getSuits() != 3)
+                    else if (computer[valPos].getValue() == history[(int)history.size() - 1].getValue() && history[(int)history.size() - 1].getSuits() > computer[valPos].getSuits())
                     {
                         return ans;
                     }
@@ -894,6 +968,7 @@ vector<int> cardsWillHit2(vector<Card> computer, vector<Card> history)
                     ans.push_back(it.second);
                     cnt = 1;
                 }
+                valPos = it.second;
             }
         }
         if (check)
@@ -935,6 +1010,7 @@ vector<int> cardsWillHit2(vector<Card> computer, vector<Card> history)
             }
         }
         cout << "Sanh Loi " << endl;
+        return ans;
     }
 }
 // Trả về giá trị true là không đánh, trả về giá trị false là đánh
