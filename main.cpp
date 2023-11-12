@@ -289,7 +289,7 @@ int main(int argc, char *args[])
                             if (!check_com || computers[i].getIsFirst())
                             {
 
-                                cout << "La computer thu " << i << " danh " << endl;
+                                // cout << "La computer thu " << i << " danh " << endl;
                                 if (computers[i].getIsFirst())
                                 {
                                     for (int j = 0; j < computers[i].getFirstCards(); j++)
