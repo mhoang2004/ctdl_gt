@@ -387,11 +387,9 @@ public:
 
     void isFirstUser()
     {
-<<<<<<< HEAD
-=======
+
         isTurn = false;
         isFirst = false;
->>>>>>> 34d237b7894d9e5cb9d3aad45c80e8ca32a4eb45
 
         if (gameNum == 0)
         {
@@ -576,15 +574,7 @@ public:
     {
         return winTexture;
     }
-    void setIsWinner(bool value = true)
-    {
-        isWinner = value;
-    }
 
-    bool getIsWinner()
-    {
-        return isWinner;
-    }
 };
 
 class Computer : public User
