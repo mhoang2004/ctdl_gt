@@ -16,3 +16,5 @@ const int THEME_NUM = 3;
 string themesCard[THEME_NUM] = {"cards1/", "cards2/", "cards3/"};
 string themeCard = "";
 int gameNum = 0;
+//Who just hit?
+int justHit = 0;

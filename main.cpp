@@ -23,6 +23,7 @@ three of 2
 #include "src/module/logic_game.h"
 #include "src/module/control.h"
 #include "src/module/score.h"
+#include "src/module/check_hit.h"
 
 bool checkWinByDefault(User &player, vector<Computer> &computers)
 {
@@ -297,6 +298,7 @@ int main(int argc, char *args[])
                                     }
                                     computers[i].hit();
                                     computers[i].setIsFirst(false);
+                                    justHit = i + 1;
                                 }
                                 else // what cards computers[i] will hit
                                 {
@@ -307,12 +309,12 @@ int main(int argc, char *args[])
                                     //     //cout << computers[i].getUserCards()[card_will_hit[k]].getValue() << ' ';
                                     // }
                                     // //cout << endl;
-
-                                    if ((history[(int)history.size() - 1][0].getValue() == 15) && ((int)history.size() > 0))
-                                    {
-                                        calculatePigChoppingMoney(computers[i], history[(int)history.size() - 1]);
-                                    }
                                     vector<int> cardWillHit = cardsWillHit2(computers[i].getUserCards(), history[(int)history.size() - 1]);
+                                    if ((history[(int)history.size() - 1][0].getValue() == 15) && cardWillHit.size() >= 4)
+                                    {
+                                        calculatePigChoppingMoney(player, computers, history[(int)history.size() - 1]);
+                                    }
+                                    
                                     for (int k = 0; k < (int)cardWillHit.size(); k++)
                                     {
                                         computers[i].changeSelected(cardWillHit[k]);
@@ -320,6 +322,7 @@ int main(int argc, char *args[])
                                     }
                                     computers[i].hit();
                                     cardWillHit.clear();
+                                    justHit = i + 1;
                                 }
 
                                 if (computers[i].checkWin())
@@ -431,13 +434,6 @@ int main(int argc, char *args[])
                     doneTurn(player, computers);
                 }
 
-                // else
-                // {
-                //     if((int)history.size() > 1 && history[history.size() - 2][0].getValue() == 15 && history[history.size() - 1].size() >= 6)
-                //     {
-                //         calculatePigChoppingMoney(player, computers, history[history.size() - 1]);
-                //     }
-                // }
 
                 // check if game finish
                 isGameFinish = true;
@@ -448,6 +444,14 @@ int main(int argc, char *args[])
                     {
                         isGameFinish = false;
                         break;
+                    }
+                }
+
+                if((int)history.size() > 0)
+                {
+                    bool checkPlayer = check_hit(history[(int)history.size() - 1], player.getUserCards());
+                    if ((history[(int)history.size() - 1][0].getValue() == 15) && checkPlayer){
+                        calculatePigChoppingMoney(player, computers, history[(int)history.size() - 1]);
                     }
                 }
 

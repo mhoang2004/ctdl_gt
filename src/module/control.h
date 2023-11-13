@@ -1,3 +1,4 @@
+
 #include "score.h"
 
 SDL_Rect skipBtnArea = {210, 440, 200, 100};
@@ -23,6 +24,7 @@ void hitBtnEvent(User &player, vector<Computer> &computers)
         SDL_RenderCopy(gRenderer, backgroundTexture, NULL, NULL);
         printResult(player, computers);
         player.hit();
+        justHit = -1;
         renderAnimationHit(history, player, computers);
         if (player.checkWin())
             player.setPlace();

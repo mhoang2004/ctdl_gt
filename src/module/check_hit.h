@@ -1,6 +1,5 @@
-#include <iostream>
-#include <vector>
-using namespace std;
+#pragma once
+#include "card.h"
 
 void sortCard(vector<Card> selectedCards)
 {
@@ -11,10 +10,10 @@ void sortCard(vector<Card> selectedCards)
 		j = i - 1;
 		while (j >= 0 && selectedCards[j].getValue() > key)
 		{
-			selectedCards[j + 1].setValue(selectedCards[j].getValue());
+			selectedCards[j + 1].setValue(to_string(selectedCards[j].getValue()));
 			j = j - 1;
 		}
-		selectedCards[j + 1].setValue(key);
+		selectedCards[j + 1].setValue(to_string(key));
 	}
 }
 bool checkStraight(vector<Card> selectedCards);
@@ -123,7 +122,7 @@ Card findMax(vector<Card> selectedCards)
 {
 	Card Cardreturn;
 	Cardreturn.setSuits(findSuitsMax(selectedCards));
-	Cardreturn.setValue(findValueMax(selectedCards));
+	Cardreturn.setValue(to_string(findValueMax(selectedCards)));
 
 	return Cardreturn;
 }

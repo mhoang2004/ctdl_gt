@@ -3,6 +3,7 @@
 #include <string>
 #include "user.h"
 #include "card.h"
+//#include "global.h"
 
 void writeData(User player, vector<Computer> computers)
 {
@@ -53,42 +54,47 @@ void calculateEndGameMoney(User &player, vector<Computer> &computers, vector<int
     writeData(player, computers);
 }
 
-void calculatePigChoppingMoney(Computer &computer, vector<Card> history)
+
+void calculatePigChoppingMoney(User &Player, vector<Computer> &computers, vector<Card> history)
 {
-    int score = 0;
-    map<int, int> his;
-    for(auto it : history)
-    {
-        his[it.getValue()]++;
-    }
-    
-    if(his[15] == 1)
-    {
-        if(history[0].getSuits() == SPADES || history[0].getSuits() == CLUBS)
-        {
-            score = 5;
-        }
-        else
-        {
-            score = 10;
-        }
-    }
-    else if(his[15] == 2)
+    int plus = 0, minus = 0;
+    if(history.size() <= 2)
     {
         for(int i = 0; i < history.size(); i++)
         {
             if(history[i].getSuits() == SPADES || history[i].getSuits() == CLUBS)
             {
-                score += 5;
+                plus += 3; 
+                minus -= 3;
             }
             else
             {
-                score += 10;
+                plus += 6;
+                minus -= 6;
             }
         }
     }
-    computer.setMoney(score);
-
+    if(Player.isUserTurn())
+    {
+        Player.setMoney(plus);
+    }
+    else
+    {
+        for(int i = 0; i < computers.size(); i++)
+        {
+            if(computers[i].isUserTurn())
+            {
+                computers[i].setMoney(plus);
+            }
+        }
+    }
+    switch (justHit)
+    {
+        case -1: Player.setMoney(minus); break;
+        case 1: computers[0].setMoney(minus); break;
+        case 2: computers[1].setMoney(minus); break;
+        case 3: computers[2].setMoney(minus); break;
+    }
 }
 
 
@@ -132,7 +138,7 @@ void readData(User &player, vector<Computer> &computers){
         file.close();
     }
 }
-
+ 
 void printResult(User player, vector<Computer> computers)
 {
     TTF_Font *font = TTF_OpenFont("src/fonts/Oswald-SemiBold.ttf", 20);
@@ -140,12 +146,12 @@ void printResult(User player, vector<Computer> computers)
     //List name of user
     string textUser[4];
 
-    textUser[0] = "YOU            " + to_string(player.getMoney());
+    textUser[0] = "YOU             " + to_string(player.getMoney());
     textUser[1] = "PLAYER 1     " + to_string(computers[0].getMoney());
     textUser[2] = "PLAYER 2     " + to_string(computers[1].getMoney());
     textUser[3] = "PLAYER 3     " + to_string(computers[2].getMoney());
 
-    int x = SCREEN_WIDTH - 190, y = SCREEN_HEIGHT/2 - 290;
+    int x = SCREEN_WIDTH - 195, y = SCREEN_HEIGHT/2 - 290;
     int padding = 0;
     SDL_Surface *textSurface = NULL;
     SDL_Texture *textTexture = NULL;
@@ -159,7 +165,7 @@ void printResult(User player, vector<Computer> computers)
         
         padding += 20;
 
-        renderQuad = {x, y + padding , 140, 30};
+        renderQuad = {x, y + padding , 150, 30};
         SDL_RenderCopy(gRenderer, textTexture, NULL, &renderQuad);   
 
         textUser[i].clear();     
