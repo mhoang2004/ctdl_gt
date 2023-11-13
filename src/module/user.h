@@ -1,9 +1,9 @@
 #pragma once
+
 #include <bits/stdc++.h>
 #include <algorithm>
 
 #include "algorithms.h"
-// #include "check_hit.h"
 using namespace std;
 
 vector<vector<Card>> history;
@@ -263,28 +263,28 @@ public:
         return 1;
     }
 
-    bool checkTriple(int selectedCard)
+    bool checkTriple(int value[], int selectedCardLen)
     {
-        for (int i = 0; i < selectedCard; i++)
+        for (int i = 0; i < selectedCardLen; i++)
         {
             if (userCards[selectedCards[i]].getValue() == 15)
                 return 0;
         }
-        if (selectedCard % 2 == 1)
+        if (selectedCardLen % 2 == 1)
             return 0;
 
-        int *tmp_1_value = new int[selectedCard / 2];
-        int *tmp_2_value = new int[selectedCard / 2];
+        int *tmp_1_value = new int[selectedCardLen / 2];
+        int *tmp_2_value = new int[selectedCardLen / 2];
         int n1 = 0;
         int n2 = 0;
-        for (int i = 0; i < selectedCard; i += 2)
+        for (int i = 0; i < selectedCardLen; i += 2)
         {
-            tmp_1_value[n1] = userCards[selectedCards[i]].getValue();
+            tmp_1_value[n1] = value[i];
             n1++;
         }
-        for (int i = 1; i < selectedCard; i += 2)
+        for (int i = 1; i < selectedCardLen; i += 2)
         {
-            tmp_2_value[n2] = userCards[selectedCards[i]].getValue();
+            tmp_2_value[n2] = value[i];
             n2++;
         }
         if (!checkSequence(tmp_1_value, n1))
@@ -295,72 +295,176 @@ public:
             if (tmp_1_value[i] != tmp_2_value[i])
                 return 0;
         }
-
-        delete[] tmp_1_value;
-        delete[] tmp_2_value;
-
         return 1;
     }
 
-    bool checkDouble(int selectedCard)
+    bool checkDouble(int value[], int selectedCardLen)
     {
-        for (int i = 1; i < selectedCard; i++)
-            if (userCards[selectedCards[0]].getValue() != userCards[selectedCards[i]].getValue())
+        for (int i = 1; i < selectedCardLen; i++)
+            if (value[0] != value[i])
                 return 0;
         return 1;
     }
 
-    bool check(int selectedCardLen)
+    bool check(int value[], int selectedCardLen)
     {
+
         if (selectedCardLen == 1)
             return 1;
         if (selectedCardLen >= 6)
-            if (checkTriple(selectedCardLen) == 1)
+            if (checkTriple(value, selectedCardLen) == 1)
                 return 1;
         if (selectedCardLen > 2)
         {
-            int value[13];
-            for (int i = 0; i < selectedCardLen; i++)
-            {
-                value[i] = userCards[selectedCards[i]].getValue();
-            }
+
             if (checkSequence(value, selectedCardLen))
                 return 1;
         }
         if (selectedCardLen >= 2)
-            if (checkDouble(selectedCardLen))
+            if (checkDouble(value, selectedCardLen))
                 return 1;
         return 0;
     }
+    int findValueMax(vector<Card> selectedCards)
+    {
+        int maxValue = selectedCards[0].getValue();
+        for (int i = 1; i < selectedCards.size(); i++)
+        {
+            if (maxValue < selectedCards[i].getValue())
+                maxValue = selectedCards[i].getValue();
+        }
+        return maxValue;
+    }
 
-    void hit()
+    int findSuitsMax(vector<Card> selectedCards)
+    {
+        int index;
+        for (int i = 0; i < selectedCards.size(); i++)
+        {
+            if (findValueMax(selectedCards) == selectedCards[i].getValue())
+            {
+                index = i;
+                break;
+            }
+        }
+        int maxSuits = selectedCards[index].getSuits();
+        for (int i = 0; i < selectedCards.size(); i++)
+        {
+            if (findValueMax(selectedCards) == selectedCards[i].getValue() && selectedCards[i].getSuits() < maxSuits)
+                maxSuits = selectedCards[i].getSuits();
+        }
+        return maxSuits;
+    }
+    Card findMax(vector<Card> selectedCards)
+    {
+        Card Cardreturn;
+        Cardreturn.setSuits(findSuitsMax(selectedCards));
+        Cardreturn.setValue2(findValueMax(selectedCards));
+
+        return Cardreturn;
+    }
+    bool check_hit(vector<Card> history, vector<Card> users)
+    {
+        int value_user[13];
+        int value_history[13];
+        for (int i = 0; i < users.size(); i++)
+        {
+            value_user[i] = userCards[selectedCards[i]].getValue();
+        }
+        for (int i = 0; i < history.size(); i++)
+        {
+            value_history[i] = history[i].getValue();
+        }
+        // check tu quy
+        if (history.size() != users.size())
+        {
+            if (history.size() == 1 && history[0].getValue() == 15)
+            {
+                if (users.size() == 4 && checkDouble(value_user, users.size()) == 1)
+                    return 1;
+                if (users.size() >= 6 && checkTriple(value_user, users.size()) == 1)
+                    return 1;
+            }
+            return 0;
+        }
+        if ((history.size() >= 6 && users.size() == 4) && checkTriple(value_history, history.size()) == 1 && checkDouble(value_user, users.size()) == 1)
+            return 1;
+        if ((history.size() < users.size()) && checkTriple(value_history, history.size()) == 1 && checkTriple(value_user, users.size()) == 1)
+            return 1;
+        if (history.size() == users.size())
+        {
+            // doi & tam & tu
+            if (history.size() >= 2 || history.size() <= 4)
+            {
+                if (users.size() == history.size() && checkDouble(value_user, users.size()) == 1 && checkDouble(value_history, history.size()) == 1)
+                {
+                    if (findValueMax(history) < findValueMax(users))
+                    {
+                        return 1;
+                    }
+                    else if (findValueMax(history) == findValueMax(users))
+
+                    {
+                        if (findSuitsMax(history) > findSuitsMax(users))
+                        {
+                            return 1;
+                        }
+                    }
+                }
+            }
+            // sanh
+            if (history.size() >= 3)
+            {
+                if (checkSequence(value_history, history.size()) == 1 && checkSequence(value_user, users.size()) == 1)
+                {
+                    if (findValueMax(users) > findValueMax(history))
+                        return 1;
+                    else if (findValueMax(users) == findValueMax(history))
+                    {
+                        if (findSuitsMax(history) > findSuitsMax(users))
+                            return 1;
+                    }
+                }
+            }
+            if (history.size() == 1)
+            {
+                if (history[0].getValue() < users[0].getValue())
+                    return 1;
+                else if (history[0].getValue() == users[0].getValue())
+                {
+                    if (history[0].getSuits() > users[0].getSuits())
+                        return 1;
+                }
+            }
+        }
+        return 0;
+    }
+    bool hit()
     {
         int selectedCardLen = selectedCards.size();
 
-        // check is valid cards?
-        if (!check(selectedCardLen))
+        vector<Card> tempSelected;
+        for (int index : selectedCards)
         {
-            return;
+            tempSelected.push_back(userCards[index]);
+        }
+        int valueSelec[13];
+        for (int i = 0; i < selectedCardLen; i++)
+        {
+            valueSelec[i] = userCards[selectedCards[i]].getValue();
+        }
+        if (!check(valueSelec, selectedCardLen))
+        {
+            return false;
         }
 
-        // vector<Card> tempSelected;
-        // for (int index : selectedCards)
-        // {
-        //     tempSelected.push_back(userCards[index]);
-        // }
-
-        // if (!check(tempSelected))
-        // {
-        //     return;
-        // }
-
-        // if (history.size() != 0)
-        // {
-        //     if (!check_hit(history.back(), tempSelected))
-        //     {
-        //         return;
-        //     }
-        // }
+        if (history.size() != 0)
+        {
+            if (!check_hit(history.back(), tempSelected))
+            {
+                return false;
+            }
+        }
 
         // change turn (if not user's turn)
         isTurn = false;
@@ -389,6 +493,7 @@ public:
         }
 
         selectedCards.clear();
+        return true;
     }
 
     void isFirstUser()

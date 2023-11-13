@@ -23,9 +23,11 @@ void hitBtnEvent(User &player, vector<Computer> &computers)
         SDL_RenderClear(gRenderer);
         SDL_RenderCopy(gRenderer, backgroundTexture, NULL, NULL);
         printResult(player, computers);
-        player.hit();
+        if (player.hit())
+        {
+            renderAnimationHit(history, player, computers);
+        };
         justHit = -1;
-        renderAnimationHit(history, player, computers);
         if (player.checkWin())
             player.setPlace();
 

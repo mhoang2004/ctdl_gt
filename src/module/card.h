@@ -113,6 +113,10 @@ public:
 	{
 		return suits;
 	}
+	void setValue2(int value)
+	{
+		this->value = value;
+	}
 	void setValue(string rank)
 	{
 		if (rank == "J")
