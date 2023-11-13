@@ -433,7 +433,13 @@ int main(int argc, char *args[])
 
                     doneTurn(player, computers);
                 }
-
+                if((int)history.size() > 0)
+                {
+                    bool checkPlayer = check_hit(history[(int)history.size() - 1], player.getUserCards());
+                    if ((history[(int)history.size() - 1][0].getValue() == 15) && checkPlayer){
+                        calculatePigChoppingMoney(player, computers, history[(int)history.size() - 1]);
+                    }
+                }
 
                 // check if game finish
                 isGameFinish = true;
@@ -447,13 +453,7 @@ int main(int argc, char *args[])
                     }
                 }
 
-                if((int)history.size() > 0)
-                {
-                    bool checkPlayer = check_hit(history[(int)history.size() - 1], player.getUserCards());
-                    if ((history[(int)history.size() - 1][0].getValue() == 15) && checkPlayer){
-                        calculatePigChoppingMoney(player, computers, history[(int)history.size() - 1]);
-                    }
-                }
+                
 
                 if (isGameFinish)
                 {
