@@ -74,6 +74,41 @@ void calculatePigChoppingMoney(User &Player, vector<Computer> &computers, vector
             }
         }
     }
+    switch (justHit)
+    {
+        case -1: {
+            if(!Player.getIsFinish())
+            {
+                Player.setMoney(minus);
+                break;
+            }
+            else return;
+        }
+        case 1: {
+            if(!computers[0].getIsFinish())
+            {
+                computers[0].setMoney(minus);
+                break;
+            }
+            else return;
+        }
+        case 2: {
+            if(!computers[1].getIsFinish())
+            {
+                computers[1].setMoney(minus);
+                break;
+            }
+            else return;
+        }
+        case 3: {
+            if(!computers[2].getIsFinish())
+            {
+                computers[2].setMoney(minus);
+                break;
+            }
+            else return;
+        }
+    }
     if(Player.isUserTurn())
     {
         Player.setMoney(plus);
@@ -88,13 +123,7 @@ void calculatePigChoppingMoney(User &Player, vector<Computer> &computers, vector
             }
         }
     }
-    switch (justHit)
-    {
-        case -1: Player.setMoney(minus); break;
-        case 1: computers[0].setMoney(minus); break;
-        case 2: computers[1].setMoney(minus); break;
-        case 3: computers[2].setMoney(minus); break;
-    }
+    
 }
 
 
